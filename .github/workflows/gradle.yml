@@ -34,7 +34,7 @@ jobs:
 
         touch ./application-dev.yml
         echo "${{ secrets.WAGUWAGU_APPLICATION_DEV }}" >> ./application-dev.yml
-        cat ./application.yml
+        cat ./application-dev.yml
       shell: bash
 
     - name: Grant execute permission for gradlew
