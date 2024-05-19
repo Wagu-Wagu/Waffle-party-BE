@@ -33,7 +33,7 @@ jobs:
         cd ./src/main/resources
 
         touch ./application-dev.yml
-        echo "${{ secrets.WAGUWAGU_APPLICATION_DEV }}" >> ./application-dev.yml
+        echo "${{ secrets.WAGUWAGU_DEV_APPLICATION }}" >> ./application-dev.yml
         cat ./application-dev.yml
       shell: bash
 
