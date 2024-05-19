@@ -30,6 +30,7 @@ jobs:
 
     - name: make application.properties 파일 생성
       run:
+        mkdir ./src/main/resources
         cd ./src/main/resources
 
         touch ./application-dev.yml
