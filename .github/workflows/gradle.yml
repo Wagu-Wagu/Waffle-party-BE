@@ -29,9 +29,8 @@ jobs:
         distribution: 'temurin'
 
     - name: make application.properties 파일 생성
-      run:
+      run: |
         cd ./src/main/resources
-
         touch ./application-dev.yml
         echo "${{ secrets.WAGUWAGU_DEV_APPLICATION }}" >> ./application-dev.yml
         cat ./application-dev.yml
