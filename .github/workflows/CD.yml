@@ -89,8 +89,8 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
       run:
         aws deploy create-deployment 
-        --application-name waguwagu-server-codedeploy-group
-        --deployment-group-name dev
+        --application-name waguwagu-server-codedeploy
+        --deployment-group-name waguwagu-server-codedeploy-group
         --file-exists-behavior OVERWRITE
         --s3-location bucket=${{ secrets.AWS_S3_BUCKET_NAME }},bundleType=zip,key=dev/$GITHUB_SHA.zip
         --region ap-northeast-2
