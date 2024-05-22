@@ -21,18 +21,18 @@ public class Comment extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "post_id")
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @Column(name = "content")
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "parent_id")
+    @JoinColumn(name = "parent_id")
     private Comment comment;
 
     @Column(name = "is_secret")
