@@ -3,7 +3,7 @@ package com.wagu.wafl.api.domain.social.controller;
 import com.wagu.wafl.api.common.ApiResponse;
 import com.wagu.wafl.api.common.message.ResponseMessage;
 import com.wagu.wafl.api.domain.social.kakao.KakaoSocialService;
-import com.wagu.wafl.api.domain.social.kakao.response.KakaoLoginRequestDTO;
+import com.wagu.wafl.api.domain.social.dto.request.SocialLoginRequestDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -20,7 +20,7 @@ public class SocialController {
     )
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> login(
-            @RequestBody KakaoLoginRequestDTO request){
+            @RequestBody SocialLoginRequestDTO request){
         val response = kakaoSocialService.login(request);
         return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_LOGIN.getMessage(), response));
     }
