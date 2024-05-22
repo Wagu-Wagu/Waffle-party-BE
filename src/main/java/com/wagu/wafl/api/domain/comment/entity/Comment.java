@@ -6,6 +6,8 @@ import com.wagu.wafl.api.domain.user.entity.User;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -50,6 +52,7 @@ public class Comment extends BaseEntity {
         if (this.post != null) {
             post.getComments().remove(this);
         }
+        this.post = post;
         post.getComments().add(this);
     }
 
@@ -58,6 +61,20 @@ public class Comment extends BaseEntity {
             parentComment.getSubComments().remove(this);
         }
         parentComment.getSubComments().add(this);
+    }
+
+    @Builder
+    Comment(User user, Post post, String content, Comment parentComment, boolean isSecret) {
+        this.user = user;
+        this.content = content;
+        if(Objects.isNull(parentComment)) {
+            this.parentComment = null;
+        }
+        else{
+            setParentComment(parentComment);
+        }
+        setPost(post);
+        this.isSecret = isSecret;
     }
 
 }

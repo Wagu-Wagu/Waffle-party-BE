@@ -4,6 +4,7 @@ import com.wagu.wafl.api.common.entity.BaseEntity;
 import com.wagu.wafl.api.domain.comment.entity.Comment;
 import com.wagu.wafl.api.domain.user.entity.User;
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,18 +43,23 @@ public class Post extends BaseEntity {
     private String thumbNail;
 
     @Column(name = "comment_count")
-    private Long commentCount;
+    private Long commentCount = 0L;
 
     @Column(name = "is_active")
     private Boolean isActive = true;
 
     @OneToMany(mappedBy = "post")
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     public void setUser(User user) {
         if (this.user!=null) {
             user.getPosts().remove(this);
         }
+        this.user = user;
         user.getPosts().add(this);
+    }
+
+    public void upCommentCount() {
+        this.commentCount += 1;
     }
 }
