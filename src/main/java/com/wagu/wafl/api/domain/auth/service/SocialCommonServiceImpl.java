@@ -24,27 +24,29 @@ public class SocialCommonServiceImpl implements SocialCommonService {
             String thirdPartyUserId,
             String providerType
     ) {
-        val user = userRepository.save(User.builder().build());
-        val userId = user.getId();
-        val accessToken = jwtTokenManager.createAccessToken(userId);
-
-        authProviderRepository.save(AuthProvider.builder()
+        AuthProvider authProvider = authProviderRepository.save(AuthProvider.builder() // todo - 이유 체크
                 .id(thirdPartyUserId)
                 .providerType(providerType)
-                .user(user)
                 .build());
+        authProviderRepository.save(authProvider);
+
+        val user = userRepository.save(
+                User.builder()
+                        .authProvider(authProvider)
+                        .build());
+
+        val accessToken = jwtTokenManager.createAccessToken(user.getId());
+
+        return SocialLoginResponseDTO.of(accessToken);
+    }
+
+    private SocialLoginResponseDTO reLogin(User user) {
+        val accessToken = jwtTokenManager.createAccessToken(user.getId());
 
         return SocialLoginResponseDTO.of(accessToken);
     }
 
     @Transactional
-    private SocialLoginResponseDTO reLogin(User user) {
-        val userId = user.getId();
-        val accessToken = jwtTokenManager.createAccessToken(userId);
-
-        return SocialLoginResponseDTO.of(accessToken);
-    }
-
     @Override
     public SocialLoginResponseDTO waguLogin(String thirdPartUserId, String providertype) {
         val authProvider = authProviderRepository.searchAuthProviderById(thirdPartUserId);

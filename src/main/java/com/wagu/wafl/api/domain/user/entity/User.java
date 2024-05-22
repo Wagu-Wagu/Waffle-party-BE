@@ -16,6 +16,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Getter
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "\"User\"")
 public class User extends BaseEntity {
 
@@ -35,7 +36,17 @@ public class User extends BaseEntity {
     @JoinColumn(name="auth_provider_id")// todo - 논의
     private AuthProvider authProvider;
 
+    public void setAuthProvider(AuthProvider authProvider) {
+        if(this.authProvider != null) {
+            this.authProvider = null;
+        }
+        this.authProvider = authProvider;
+        authProvider.setUser(this);
+    }
+
     @Builder
-    public User(){}
+    public User(AuthProvider authProvider){
+        setAuthProvider(authProvider);
+    }
     // 연관관계 아직 생성 안함 Todo
 }
