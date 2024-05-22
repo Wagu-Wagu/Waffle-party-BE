@@ -29,8 +29,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
-//    @OneToOne(mappedBy = "user") // todo - 논의
-//    private AuthProvider authProvider;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="auth_provider_id")// todo - 논의
+    private AuthProvider authProvider;
 
     // 연관관계 아직 생성 안함 Todo
 }
