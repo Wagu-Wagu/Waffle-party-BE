@@ -1,4 +1,4 @@
-package com.wagu.wafl.api.domain.user;
+package com.wagu.wafl.api.domain.user.entity;
 
 import com.wagu.wafl.api.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -21,6 +21,9 @@ public class User extends BaseEntity {
     private String nickName;
 
     private String email;
+
+    @OneToOne(mappedBy = "user")
+    private AuthProvider authProvider;
 
     // 연관관계 아직 생성 안함 Todo
 }

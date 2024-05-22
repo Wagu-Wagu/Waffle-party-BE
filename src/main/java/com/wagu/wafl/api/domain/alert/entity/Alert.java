@@ -2,7 +2,7 @@ package com.wagu.wafl.api.domain.alert.entity;
 
 import com.wagu.wafl.api.common.entity.BaseEntity;
 import com.wagu.wafl.api.domain.post.entity.Post;
-import com.wagu.wafl.api.domain.user.User;
+import com.wagu.wafl.api.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
