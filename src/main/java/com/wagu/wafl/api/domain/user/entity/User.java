@@ -22,8 +22,8 @@ public class User extends BaseEntity {
 
     private String email;
 
-    @OneToOne(mappedBy = "user")
-    private AuthProvider authProvider;
+//    @OneToOne(mappedBy = "user") // todo - 논의
+//    private AuthProvider authProvider;
 
     // 연관관계 아직 생성 안함 Todo
 }
