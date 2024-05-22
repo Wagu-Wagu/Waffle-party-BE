@@ -4,7 +4,7 @@ import com.wagu.wafl.api.common.ApiResponse;
 import com.wagu.wafl.api.common.message.ResponseMessage;
 import com.wagu.wafl.api.domain.comment.dto.request.CreatePostCommentDTO;
 import com.wagu.wafl.api.domain.comment.service.CommentService;
-import com.wagu.wafl.api.domain.post.repository.PostRepository;
+
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
 
     private final CommentService commentService;
-    private final PostRepository postRepository;
 
     @Operation( summary = "게시글에 댓글 달기", description = "게시글에 댓글을 답니다.")
     @PostMapping("")

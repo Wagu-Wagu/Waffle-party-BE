@@ -56,6 +56,14 @@ public class Comment extends BaseEntity {
         post.getComments().add(this);
     }
 
+    public void setUser(User user) {
+        if(this.user != null) {
+            user.getComments().remove(this);
+        }
+        this.user = user;
+        user.getComments().add(this);
+    }
+
     public void setParentComment(Comment parentComment) {
         if(this.parentComment!=null) {
             parentComment.getSubComments().remove(this);
@@ -65,7 +73,7 @@ public class Comment extends BaseEntity {
 
     @Builder
     Comment(User user, Post post, String content, Comment parentComment, boolean isSecret) {
-        this.user = user;
+        setUser(user);
         this.content = content;
         if(Objects.isNull(parentComment)) {
             this.parentComment = null;

@@ -1,6 +1,7 @@
 package com.wagu.wafl.api.domain.user.entity;
 
 import com.wagu.wafl.api.common.entity.BaseEntity;
+import com.wagu.wafl.api.domain.comment.entity.Comment;
 import com.wagu.wafl.api.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -30,8 +31,11 @@ public class User extends BaseEntity {
     private List<Post> posts = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="auth_provider_id")// todo - 논의
+    @JoinColumn(name="auth_provider_id")
     private AuthProvider authProvider;
+
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments = new ArrayList<>();
 
     // 연관관계 아직 생성 안함 Todo
 }
