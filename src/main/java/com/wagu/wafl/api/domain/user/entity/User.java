@@ -1,9 +1,13 @@
 package com.wagu.wafl.api.domain.user.entity;
 
 import com.wagu.wafl.api.common.entity.BaseEntity;
+import com.wagu.wafl.api.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -21,6 +25,9 @@ public class User extends BaseEntity {
     private String nickName;
 
     private String email;
+
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts = new ArrayList<>();
 
 //    @OneToOne(mappedBy = "user") // todo - 논의
 //    private AuthProvider authProvider;

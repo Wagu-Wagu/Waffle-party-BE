@@ -20,5 +20,4 @@ public class AuthProvider extends BaseEntity {
 //    @OneToOne(fetch = FetchType.LAZY) // todo 논의
 //    @JoinColumn(name = "user_id")
 //    private User user;
-
 }

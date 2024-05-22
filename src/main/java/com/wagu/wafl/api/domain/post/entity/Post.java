@@ -44,4 +44,12 @@ public class Post extends BaseEntity {
 
     @Column(name = "is_active")
     private Boolean isActive = true;
+
+
+    public void setUser(User user) {
+        if (this.user!=null) {
+            user.getPosts().remove(this);
+        }
+        user.getPosts().add(this);
+    }
 }
