@@ -33,7 +33,7 @@ public class PostController {
     public ResponseEntity<ApiResponse> getOttPosts(@RequestParam(required = false, defaultValue = "") List<OttTag> ottTags) {
         val response = postService.getOttPosts(ottTags);
         return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_GET_POST_LIST.getMessage(), response));
-
+    }
 
     @PostMapping("/s3test")
     public ResponseEntity<ApiResponse> s3TestController(
