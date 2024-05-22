@@ -6,7 +6,6 @@ import com.wagu.wafl.api.domain.user.kakao.KakaoApiClient;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.wagu.wafl.api.domain.user.dto.request.EditUserNickNameRequestDto;
-
 import org.springframework.transaction.annotation.Transactional;
 
 
