@@ -1,6 +1,6 @@
-package com.wagu.wafl.api.domain.social.kakao;
+package com.wagu.wafl.api.domain.auth.kakao;
 
-import com.wagu.wafl.api.domain.social.kakao.response.KakaoUserResponse;
+import com.wagu.wafl.api.domain.auth.kakao.response.KakaoUserResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;

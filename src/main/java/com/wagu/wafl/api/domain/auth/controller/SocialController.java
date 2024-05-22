@@ -1,9 +1,9 @@
-package com.wagu.wafl.api.domain.social.controller;
+package com.wagu.wafl.api.domain.auth.controller;
 
 import com.wagu.wafl.api.common.ApiResponse;
 import com.wagu.wafl.api.common.message.ResponseMessage;
-import com.wagu.wafl.api.domain.social.kakao.KakaoSocialService;
-import com.wagu.wafl.api.domain.social.dto.request.SocialLoginRequestDTO;
+import com.wagu.wafl.api.domain.auth.kakao.KakaoSocialService;
+import com.wagu.wafl.api.domain.auth.dto.request.SocialLoginRequestDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/social")
+@RequestMapping("api/v1/auth")
 public class SocialController {
     private final KakaoSocialService kakaoSocialService;
     @Operation( summary = "소셜 로그인",
