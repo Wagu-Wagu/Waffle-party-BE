@@ -6,10 +6,10 @@ spring:
 
 spring:
   profiles:
-    active: dev
+    active: test
 
 ---
 
 spring:
   profiles:
-    active: test
+    active: dev
