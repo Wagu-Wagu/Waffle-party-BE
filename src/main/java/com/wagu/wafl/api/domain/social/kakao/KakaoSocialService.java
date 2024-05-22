@@ -4,6 +4,7 @@ import com.wagu.wafl.api.domain.social.kakao.response.KakaoLoginRequestDTO;
 import com.wagu.wafl.api.domain.social.kakao.response.KakaoUserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

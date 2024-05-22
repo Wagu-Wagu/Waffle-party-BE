@@ -1,8 +1,10 @@
 package com.wagu.wafl.api.domain.post.entity;
 
 import com.wagu.wafl.api.common.entity.BaseEntity;
+import com.wagu.wafl.api.domain.comment.entity.Comment;
 import com.wagu.wafl.api.domain.user.entity.User;
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -45,6 +47,8 @@ public class Post extends BaseEntity {
     @Column(name = "is_active")
     private Boolean isActive = true;
 
+    @OneToMany(mappedBy = "post")
+    private List<Comment> comments;
 
     public void setUser(User user) {
         if (this.user!=null) {

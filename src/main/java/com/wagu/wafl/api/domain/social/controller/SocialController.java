@@ -1,6 +1,7 @@
 package com.wagu.wafl.api.domain.social.controller;
 
 import com.wagu.wafl.api.common.ApiResponse;
+import com.wagu.wafl.api.common.message.ResponseMessage;
 import com.wagu.wafl.api.domain.social.kakao.KakaoSocialService;
 import com.wagu.wafl.api.domain.social.kakao.response.KakaoLoginRequestDTO;
 import io.swagger.v3.oas.annotations.Operation;
