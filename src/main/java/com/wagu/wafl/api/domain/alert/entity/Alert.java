@@ -17,19 +17,19 @@ public class Alert extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "comment_id")
+    @Column(name = "alert_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "post_id")
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "comment_id")
+    @JoinColumn(name = "comment_id")
     private Post commentId;
 
     @Column(name = "is_read")
