@@ -33,5 +33,5 @@ public class Alert extends BaseEntity {
     private Post commentId;
 
     @Column(name = "is_read")
-    private Boolean isRead;
+    private Boolean isRead = false;
 }

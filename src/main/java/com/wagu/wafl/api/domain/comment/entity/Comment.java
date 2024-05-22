@@ -31,12 +31,13 @@ public class Comment extends BaseEntity {
     @Column(name = "content")
     private String content;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @Column(name = "parent_id")
-    private Long parentId;
+    private Comment comment;
 
     @Column(name = "is_secret")
-    private Boolean isSecret; // 이렇게 비밀댓글 여부는 isSecret = false; 이런 식으로 초기화 해놓는 건 어때??
+    private Boolean isSecret = false; // 이렇게 비밀댓글 여부는 isSecret = false; 이런 식으로 초기화 해놓는 건 어때??
 
     @Column(name = "is_active")
-    private Boolean isActive;
+    private Boolean isActive = true;
 }

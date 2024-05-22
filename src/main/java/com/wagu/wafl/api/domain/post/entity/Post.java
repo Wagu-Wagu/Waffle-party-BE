@@ -33,6 +33,7 @@ public class Post extends BaseEntity {
     private String photoes;
 
     @Column(name = "ott_tag")
+    @Enumerated(EnumType.STRING)
     private OttTag ottTag;
 
     @Column(name = "thumb_nail")
@@ -42,5 +43,5 @@ public class Post extends BaseEntity {
     private Long commentCount;
 
     @Column(name = "is_active")
-    private Boolean isActive;
+    private Boolean isActive = true;
 }
