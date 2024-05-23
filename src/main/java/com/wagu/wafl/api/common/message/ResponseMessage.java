@@ -15,6 +15,7 @@ public enum ResponseMessage {
     SUCCESS_EDIT_USER_PHOTO("유저 프로필 변경에 성공했습니다"),
 
     //post
+    SUCCESS_CREATE_POST("게시글 생성을 성공했습니다."),
     SUCCESS_GET_POST_LIST("게시글 목록 조회를 성공했습니다."),
     SUCCESS_CREATE_POST_COMMENT("게시글 답글 달기에 성공했습니다.");
 

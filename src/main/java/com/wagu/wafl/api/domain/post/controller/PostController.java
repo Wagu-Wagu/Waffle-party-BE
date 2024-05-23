@@ -3,12 +3,14 @@ package com.wagu.wafl.api.domain.post.controller;
 import com.wagu.wafl.api.common.ApiResponse;
 import com.wagu.wafl.api.common.message.ResponseMessage;
 import com.wagu.wafl.api.config.resolver.UserId;
+import com.wagu.wafl.api.domain.post.dto.request.CreatePostRequestDTO;
 import com.wagu.wafl.api.domain.post.entity.OttTag;
 import com.wagu.wafl.api.domain.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 
 import com.wagu.wafl.api.domain.s3.service.S3Service;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +28,20 @@ public class PostController {
 
     private final PostService postService;
     private final S3Service s3Service;
-  
+
+    @Operation( summary = "글 작성하기 ",
+            description = "글을 작성합니다.."
+    )
+    @PostMapping("create")
+    public ResponseEntity<ApiResponse> createPosts(
+            @UserId Long userId,
+            @ModelAttribute @Valid CreatePostRequestDTO request
+            ) {
+        postService.createPost(userId, request);
+        return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_CREATE_POST.getMessage()));
+    }
+
+
     @Operation( summary = "OTT 포스트 리스트 갖고오기 ",
             description = "OTT필터링에 맞는 OTT포스트를 시간 순을 기준으로 나열합니다."
     )
