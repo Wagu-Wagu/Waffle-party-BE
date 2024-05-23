@@ -20,6 +20,7 @@ public enum ExceptionMessage {
     NOT_FOUND_USER("id에 해당하는 유저를 찾을 수 없습니다."),
     ALREADY_EXIST_NICKNAME("이미 존재하는 유저명 입니다."),
     IS_THE_SAME_NICKNAME("바꾸는 닉네임과 현재 닉네임이 일치합니다."),
+    EXCEED_MAX_FILE_SIZE("파일 크기 초과 오류, 업로드하는 파일은 2MB를 초과할 수 없습니다."),
 
     /* post */
     NOT_FOUND_POST("id에 해당하는 게시글을 찾을 수 없습니다.");

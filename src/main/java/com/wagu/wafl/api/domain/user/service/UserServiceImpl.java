@@ -2,22 +2,28 @@ package com.wagu.wafl.api.domain.user.service;
 
 import com.wagu.wafl.api.common.exception.UserException;
 import com.wagu.wafl.api.common.message.ExceptionMessage;
+import com.wagu.wafl.api.config.S3Config;
+import com.wagu.wafl.api.domain.s3.service.S3ServiceImpl;
 import com.wagu.wafl.api.domain.user.entity.User;
 import com.wagu.wafl.api.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.val;
-import org.apache.coyote.BadRequestException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.wagu.wafl.api.domain.user.dto.request.EditUserNickNameRequestDto;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @AllArgsConstructor
 @Service
 public class UserServiceImpl implements UserService{
+    private final S3Config s3Config;
     private final UserRepository userRepository;
+    private final S3ServiceImpl s3ServiceImpl;
 
     @Transactional
     @Override
@@ -36,9 +42,29 @@ public class UserServiceImpl implements UserService{
         user.setNickName(request.nickName());
     }
 
-    private User findUser(Long userId) {
+    @Transactional
+    @Override
+    public void editUserImage(Long userId, MultipartFile requestFile) {
+        User user = findUser(userId);
+
+        if(Objects.isNull(requestFile)) {
+            user.setUserImage("");
+            return;
+        }
+        String userImageS3URL = s3ServiceImpl.uploadImage(requestFile, s3Config.getUserImageFolderName()); //todo - 동일이미지 업로드
+
+        String splitedURL = splitUserURL(userImageS3URL);
+        user.setUserImage(splitedURL);
+    }
+
+    private String splitUserURL(String UserS3URL) {
+        String url = UserS3URL.split(s3Config.getUserS3ImageBaseURL())[1];
+        return url;
+    }
+
+    private User findUser(Long userId) { //todo - findEntity 한번에 클래스로 모아, Public으로 빼는거 어떤지
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND_USER.getMessage()));
-    } //todo - findEntity 한번에 클래스로 모아, Public으로 빼는거 어떤지
+    }
 
 }
