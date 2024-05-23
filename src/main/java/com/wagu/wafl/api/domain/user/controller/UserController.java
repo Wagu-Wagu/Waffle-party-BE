@@ -59,4 +59,12 @@ public class UserController {
         val response = userService.getMyInfo(userId);
         return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_GET_MY_INFO.getMessage(), response));
     }
+
+    @Operation( summary = " 유저가 단 댓글 확인 api",
+    description = "유저가 올린 댓글, 답댓글 정보를 return 합니다. 최신순으로 정렬")
+    @GetMapping("/my/comments")
+    ResponseEntity<ApiResponse> getMyComments(@UserId Long userId) {
+        val response = userService.getMyComments(userId);
+        return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_GET_MY_COMMENTS.getMessage(), response));
+    }
 }

@@ -4,12 +4,16 @@ import com.wagu.wafl.api.common.exception.UserException;
 import com.wagu.wafl.api.common.message.ExceptionMessage;
 import com.wagu.wafl.api.config.S3Config;
 import com.wagu.wafl.api.config.WaguConfig;
+import com.wagu.wafl.api.domain.comment.entity.Comment;
 import com.wagu.wafl.api.domain.s3.service.S3ServiceImpl;
+import com.wagu.wafl.api.domain.user.dto.response.GetMyCommentResponseDTO;
 import com.wagu.wafl.api.domain.user.dto.response.GetMyInfoResponseDTO;
 import com.wagu.wafl.api.domain.user.entity.User;
 import com.wagu.wafl.api.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.val;
 
@@ -66,6 +70,20 @@ public class UserServiceImpl implements UserService{
         User user = findUser(userId);
 
         return GetMyInfoResponseDTO.of(user, waguConfig.getWaguVersion());
+    }
+
+    @Override
+    public List<GetMyCommentResponseDTO> getMyComments(Long userId) {
+        val user = userRepository.findUserAndCommentOrderByCreatedAt(userId);
+
+        if(!user.isPresent()) {
+            return null;
+        }
+
+        List<Comment> comments = user.get().getComments();
+        return comments.stream().map((c) -> {
+            return GetMyCommentResponseDTO.of(c.getPost(), c);
+        }).collect(Collectors.toList());
     }
 
     private String splitUserURL(String UserS3URL) {
