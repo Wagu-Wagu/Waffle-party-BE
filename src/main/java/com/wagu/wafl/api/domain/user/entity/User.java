@@ -52,6 +52,7 @@ public class User extends BaseEntity {
 
     @Builder
     public User(AuthProvider authProvider){
+        this.userImage = "";
         setAuthProvider(authProvider);
     }
 
