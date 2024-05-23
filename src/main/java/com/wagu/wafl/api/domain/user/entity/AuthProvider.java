@@ -3,17 +3,20 @@ package com.wagu.wafl.api.domain.user.entity;
 
 import com.wagu.wafl.api.common.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
+@Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "\"AuthProvider\"")
 public class AuthProvider extends BaseEntity {
 
     @Id
     @Column(name = "auth_provider_id")
-    private String authProviderId;
+    private String id;
 
     private String providerType;
 

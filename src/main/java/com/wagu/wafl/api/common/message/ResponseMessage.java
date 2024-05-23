@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ResponseMessage {
 
+    //social
+    SUCCESS_LOGIN("로그인에 성공하였습니다."),
+
     //user
     SUCCESS_EDIT_USER_NICKNAME("유저 닉네임 변경에 성공했습니다."),
 

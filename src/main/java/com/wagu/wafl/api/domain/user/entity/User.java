@@ -4,6 +4,8 @@ import com.wagu.wafl.api.common.entity.BaseEntity;
 import com.wagu.wafl.api.domain.comment.entity.Comment;
 import com.wagu.wafl.api.domain.post.entity.Post;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,8 +15,9 @@ import java.util.List;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Getter
-@NoArgsConstructor
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "\"User\"")
 public class User extends BaseEntity {
 
@@ -34,8 +37,21 @@ public class User extends BaseEntity {
     @JoinColumn(name="auth_provider_id")
     private AuthProvider authProvider;
 
+
+    public void setAuthProvider(AuthProvider authProvider) {
+        if(this.authProvider != null) {
+            this.authProvider = null;
+        }
+        this.authProvider = authProvider;
+        authProvider.setUser(this);
+    }
+
+    @Builder
+    public User(AuthProvider authProvider){
+        setAuthProvider(authProvider);
+    }
+
     @OneToMany(mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
 
-    // 연관관계 아직 생성 안함 Todo
 }

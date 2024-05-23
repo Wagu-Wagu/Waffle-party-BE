@@ -6,7 +6,10 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum ExceptionMessage {
-    /* s3 upload */
+    // auth
+    INVALID_KAKAO_TOKEN("유효하지 않은 카카오 토큰입니다."),
+
+    // s3 upload
     NOT_FOUND_IMAGE_TO_UPLOAD("등록할 이미지를 찾을 수 없습니다."),
     NOT_FOUND_FILE("등록할 파일을 찾을 수 없습니다."),
     NOT_REQUESTED_FILE("요청된 파일이 없습니다."),
