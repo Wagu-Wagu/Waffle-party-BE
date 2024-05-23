@@ -30,6 +30,8 @@ public class User extends BaseEntity {
 
     private String email;
 
+    private String userImage;
+
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
@@ -55,6 +57,9 @@ public class User extends BaseEntity {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
     }
 
 }
