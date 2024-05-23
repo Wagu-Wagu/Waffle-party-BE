@@ -28,7 +28,7 @@ public class JwtTokenManager {
 
     public String createAccessToken(Long userId) {
         val exp = ZonedDateTime.now(KST).toLocalDateTime().plusHours(3).atZone(KST).toInstant();
-
+//        val exp = ZonedDateTime.now(KST).toLocalDateTime().plusNanos(1).atZone(KST).toInstant();
         return Jwts.builder()
                 .setSubject(Long.toString(userId))
                 .setExpiration(Date.from(exp))
@@ -38,9 +38,11 @@ public class JwtTokenManager {
 
     public boolean verifyToken(String token) {
         try {
-            final Claims claims = getBody(token);
+            final Claims claims = getBody(token); // to 주영 : 이 부분 변수할당 필요 없어보임,
+                                            // UserIdResolver에서 verify(token)이후
+                                            // jwtTokenManager.getJwtContents(token); 하는 일 똑같이 하는 꼴
             return true;
-        } catch (ExpiredJwtException e) {
+        } catch (ExpiredJwtException e) { // 만료된 토큰을 잡는데,
             return false;
         }
     }
