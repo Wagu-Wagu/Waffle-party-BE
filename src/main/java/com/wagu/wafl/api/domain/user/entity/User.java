@@ -33,10 +33,12 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments = new ArrayList<>();
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="auth_provider_id")
     private AuthProvider authProvider;
-
 
     public void setAuthProvider(AuthProvider authProvider) {
         if(this.authProvider != null) {
@@ -51,7 +53,8 @@ public class User extends BaseEntity {
         setAuthProvider(authProvider);
     }
 
-    @OneToMany(mappedBy = "user")
-    private List<Comment> comments = new ArrayList<>();
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
 
 }

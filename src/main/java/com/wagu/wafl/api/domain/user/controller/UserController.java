@@ -1,6 +1,7 @@
 package com.wagu.wafl.api.domain.user.controller;
 
 
+import com.wagu.wafl.api.config.resolver.UserId;
 import com.wagu.wafl.api.domain.user.service.UserService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,12 +30,13 @@ public class UserController {
 
 
 
-    @Operation( summary = "유저 닉네임 변경 확인",
+    @Operation( summary = "유저 닉네임 변경",
             description = "닉네임 유효성 체크 후 유저 닉네임을 변경합니다."
     )
-    @PatchMapping("/name") // todo - token
-    ResponseEntity<ApiResponse> editUserNickName(@Valid @RequestBody EditUserNickNameRequestDto request) {
-        userService.editUserNickName(request);
+    @PatchMapping("/nickName") // todo - token
+    ResponseEntity<ApiResponse> editUserNickName(@UserId Long userId,
+                                                 @Valid @RequestBody EditUserNickNameRequestDto request) {
+        userService.editUserNickName(userId, request);
         return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_EDIT_USER_NICKNAME.getMessage()));
     }
 }
