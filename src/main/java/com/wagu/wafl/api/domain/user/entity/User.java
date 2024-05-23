@@ -30,13 +30,17 @@ public class User extends BaseEntity {
 
     private String email;
 
+    private String userImage;
+
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="auth_provider_id")
     private AuthProvider authProvider;
-
 
     public void setAuthProvider(AuthProvider authProvider) {
         if(this.authProvider != null) {
@@ -48,10 +52,15 @@ public class User extends BaseEntity {
 
     @Builder
     public User(AuthProvider authProvider){
+        this.userImage = "";
         setAuthProvider(authProvider);
     }
 
-    @OneToMany(mappedBy = "user")
-    private List<Comment> comments = new ArrayList<>();
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
+    }
 
 }

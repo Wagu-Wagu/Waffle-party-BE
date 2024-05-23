@@ -12,6 +12,7 @@ public enum ResponseMessage {
 
     //user
     SUCCESS_EDIT_USER_NICKNAME("유저 닉네임 변경에 성공했습니다."),
+    SUCCESS_EDIT_USER_PHOTO("유저 프로필 변경에 성공했습니다"),
 
     //post
     SUCCESS_GET_POST_LIST("게시글 목록 조회를 성공했습니다."),
