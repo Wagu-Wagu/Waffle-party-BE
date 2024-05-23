@@ -2,6 +2,7 @@ package com.wagu.wafl.api.domain.post.controller;
 
 import com.wagu.wafl.api.common.ApiResponse;
 import com.wagu.wafl.api.common.message.ResponseMessage;
+import com.wagu.wafl.api.config.resolver.UserId;
 import com.wagu.wafl.api.domain.post.entity.OttTag;
 import com.wagu.wafl.api.domain.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;

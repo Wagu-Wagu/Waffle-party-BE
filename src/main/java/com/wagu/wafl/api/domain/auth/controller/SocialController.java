@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("api/v1/auth")
 public class SocialController {
+
     private final KakaoSocialService kakaoSocialService;
+
     @Operation( summary = "소셜 로그인",
             description = "소셜 로그인을 진행합니다."
     )
