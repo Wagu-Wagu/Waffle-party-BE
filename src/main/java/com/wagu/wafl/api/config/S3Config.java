@@ -24,6 +24,16 @@ public class S3Config {
     @Value("${cloud.aws.region}")
     private String region;
 
+    @Value("${s3.maxFileSize}")
+    private String maxFileSize;
+
+
+    @Value("${s3.baseURL.user}")
+    private String userS3ImageBaseURL;
+
+    @Value("${s3.folder.user}")
+    private String userImageFolderName;
+
     @Bean
     public BasicAWSCredentials createAwsCredentials(){
         return new BasicAWSCredentials(accessKey,secretKey);
