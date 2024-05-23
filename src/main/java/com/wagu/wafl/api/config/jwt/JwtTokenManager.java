@@ -28,7 +28,6 @@ public class JwtTokenManager {
 
     public String createAccessToken(Long userId) {
         val exp = ZonedDateTime.now(KST).toLocalDateTime().plusHours(3).atZone(KST).toInstant();
-//        val exp = ZonedDateTime.now(KST).toLocalDateTime().plusNanos(1).atZone(KST).toInstant();
         return Jwts.builder()
                 .setSubject(Long.toString(userId))
                 .setExpiration(Date.from(exp))
