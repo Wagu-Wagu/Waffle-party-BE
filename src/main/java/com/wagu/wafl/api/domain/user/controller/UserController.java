@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.RequiredArgsConstructor;
 
+import lombok.val;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.wagu.wafl.api.common.ApiResponse;
@@ -48,5 +49,14 @@ public class UserController {
                                                  @RequestPart(required = false) MultipartFile userImage) {
         userService.editUserImage(userId, userImage);
         return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_EDIT_USER_PHOTO.getMessage()));
+    }
+
+    @Operation( summary = "마이페이지 api",
+        description = "마이페이지 관련 정보를 return합니다."
+    )
+    @GetMapping("/my")
+    ResponseEntity<ApiResponse> getMyInfo(@UserId Long userId){
+        val response = userService.getMyInfo(userId);
+        return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_GET_MY_INFO.getMessage(), response));
     }
 }

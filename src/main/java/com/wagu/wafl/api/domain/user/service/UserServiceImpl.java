@@ -3,7 +3,9 @@ package com.wagu.wafl.api.domain.user.service;
 import com.wagu.wafl.api.common.exception.UserException;
 import com.wagu.wafl.api.common.message.ExceptionMessage;
 import com.wagu.wafl.api.config.S3Config;
+import com.wagu.wafl.api.config.WaguConfig;
 import com.wagu.wafl.api.domain.s3.service.S3ServiceImpl;
+import com.wagu.wafl.api.domain.user.dto.response.GetMyInfoResponseDTO;
 import com.wagu.wafl.api.domain.user.entity.User;
 import com.wagu.wafl.api.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -11,6 +13,7 @@ import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.val;
 
+import org.apache.catalina.util.ToStringUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.wagu.wafl.api.domain.user.dto.request.EditUserNickNameRequestDto;
@@ -22,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class UserServiceImpl implements UserService{
     private final S3Config s3Config;
+    private final WaguConfig waguConfig;
     private final UserRepository userRepository;
     private final S3ServiceImpl s3ServiceImpl;
 
@@ -57,6 +61,13 @@ public class UserServiceImpl implements UserService{
         user.setUserImage(splitedURL);
     }
 
+    @Override
+    public GetMyInfoResponseDTO getMyInfo(Long userId) {
+        User user = findUser(userId);
+
+        return GetMyInfoResponseDTO.of(user, waguConfig.getWaguVersion());
+    }
+
     private String splitUserURL(String UserS3URL) {
         String url = UserS3URL.split(s3Config.getUserS3ImageBaseURL())[1];
         return url;
@@ -66,5 +77,4 @@ public class UserServiceImpl implements UserService{
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND_USER.getMessage()));
     }
-
 }
