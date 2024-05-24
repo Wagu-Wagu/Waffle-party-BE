@@ -16,7 +16,8 @@ public enum ResponseMessage {
 
     //post
     SUCCESS_GET_POST_LIST("게시글 목록 조회를 성공했습니다."),
-    SUCCESS_CREATE_POST_COMMENT("게시글 답글 달기에 성공했습니다.");
+    SUCCESS_CREATE_POST_COMMENT("게시글 댓글 달기에 성공했습니다."),
+    SUCCESS_CREATE_COMMENT_REPLY("게시글 답댓글 달기에 성공했습니다.");
 
     private final String message;
 }

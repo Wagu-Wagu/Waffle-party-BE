@@ -1,6 +1,7 @@
 package com.wagu.wafl.api.domain.comment.service;
 
 import com.wagu.wafl.api.common.message.ExceptionMessage;
+import com.wagu.wafl.api.domain.comment.dto.request.CreateCommentReplyDTO;
 import com.wagu.wafl.api.domain.comment.dto.request.CreatePostCommentDTO;
 import com.wagu.wafl.api.domain.comment.entity.Comment;
 import com.wagu.wafl.api.domain.comment.repository.CommentRepository;
@@ -34,6 +35,24 @@ public class CommentServiceImpl implements CommentService {
         commentPost.upCommentCount();
     }
 
+    @Transactional
+    @Override
+    public void createCommentReply(Long userId, CreateCommentReplyDTO request) {
+        User commentReplyCreateUser = findUser(userId);
+        Post commentReplyPost = findPost(request.postId());
+        Comment commentReplyComment = findComment(request.commentId());
+
+        Comment newComment = CreateCommentReplyDTO.
+                toEntity(
+                        commentReplyCreateUser,
+                        commentReplyPost,
+                        commentReplyComment,
+                        request.content(),
+                        request.isSecret());
+        commentRepository.save(newComment);
+        commentReplyPost.upCommentCount();
+    }
+
     private User findUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND_USER.getMessage()));
@@ -42,5 +61,10 @@ public class CommentServiceImpl implements CommentService {
     private Post findPost(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND_POST.getMessage()));
+    }
+
+    private Comment findComment(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND_COMMENT.getMessage()));
     }
 }
