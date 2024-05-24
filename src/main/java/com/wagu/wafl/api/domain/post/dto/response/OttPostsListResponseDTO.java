@@ -6,7 +6,9 @@ import com.wagu.wafl.api.domain.post.util.PhotoesParsingToList;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Builder
 public record OttPostsListResponseDTO(
@@ -31,7 +33,11 @@ record PostVO(
         String thumbNail
 ) {
     public static PostVO of(Post post, String nickName) {
-        List<String> photoes = PhotoesParsingToList.toList(post.getPhotoes());
+        List<String> photoes = new ArrayList<>();
+
+        if(!Objects.isNull(post.getPhotoes()) &&!post.getPhotoes().isBlank()) {
+            photoes = PhotoesParsingToList.toList(post.getPhotoes());
+        }
         return PostVO.builder()
                 .ottTag(post.getOttTag())
                 .title(post.getTitle())
