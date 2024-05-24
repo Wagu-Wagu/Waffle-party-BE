@@ -6,6 +6,7 @@ import com.wagu.wafl.api.config.S3Config;
 import com.wagu.wafl.api.config.WaguConfig;
 import com.wagu.wafl.api.domain.comment.entity.Comment;
 import com.wagu.wafl.api.domain.s3.service.S3ServiceImpl;
+import com.wagu.wafl.api.domain.user.dto.request.OnboardRequestDTO;
 import com.wagu.wafl.api.domain.user.dto.response.GetMyCommentResponseDTO;
 import com.wagu.wafl.api.domain.user.dto.response.GetMyInfoResponseDTO;
 import com.wagu.wafl.api.domain.user.entity.User;
@@ -32,6 +33,23 @@ public class UserServiceImpl implements UserService{
     private final WaguConfig waguConfig;
     private final UserRepository userRepository;
     private final S3ServiceImpl s3ServiceImpl;
+
+    @Transactional
+    @Override
+    public void onboard(Long userId, OnboardRequestDTO request) {
+        User user = findUser(userId);
+
+        if(user.getNickName()!=null) {
+            throw new UserException(ExceptionMessage.ALREADY_DID_ONBOARD.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        val sameNickNameUser = userRepository.findByNickName(request.nickName());
+        if(sameNickNameUser.isPresent()) {
+            throw new UserException(ExceptionMessage.ALREADY_EXIST_NICKNAME.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        user.setNickName(request.nickName());
+    }
 
     @Transactional
     @Override

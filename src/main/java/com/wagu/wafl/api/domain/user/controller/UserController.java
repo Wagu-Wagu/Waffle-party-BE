@@ -2,6 +2,7 @@ package com.wagu.wafl.api.domain.user.controller;
 
 
 import com.wagu.wafl.api.config.resolver.UserId;
+import com.wagu.wafl.api.domain.user.dto.request.OnboardRequestDTO;
 import com.wagu.wafl.api.domain.user.service.UserService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,6 +31,13 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
 
     private final UserService userService;
+
+    @Operation( summary = "유저 온보딩", description = "유저 온보딩을 진행합니다.")
+    @PatchMapping("/onboard")
+    public ResponseEntity<ApiResponse> onboard(@UserId Long userId, @Valid @RequestBody OnboardRequestDTO request) {
+        userService.onboard(userId, request);
+        return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_USER_ONBOARD.getMessage()));
+    }
 
     @Operation( summary = "유저 닉네임 변경",
             description = "닉네임 유효성 체크 후 유저 닉네임을 변경합니다."
