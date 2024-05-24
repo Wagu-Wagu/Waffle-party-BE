@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -51,7 +52,7 @@ public class PostServiceImpl implements PostService{
     @Override
     public void createPost(Long userId, CreatePostRequestDTO request) {
         User user = findUser(userId);
-        String imageUrls = savePostImagesAndGetUrl(request.postImages()); // S3에 저장 후 url list를 리턴 받는다.
+        String imageUrls = savePostImagesAndGetUrl(request.postImages());
 
         String[] stringArray = imageUrls.replaceAll("[\\[\\]\"]", "").split(",");
         List<String> imageUrlList = Arrays.asList(stringArray);
@@ -67,14 +68,21 @@ public class PostServiceImpl implements PostService{
     }
 
     private String savePostImagesAndGetUrl(List<MultipartFile> postImages) {
-        MultipartFile multipartFile = postImages.get(0);
-        String originFileName = multipartFile.getOriginalFilename();
-
-        if (!postImages.isEmpty() && originFileName != "") {
+        if (checkImageFilesEmpty(postImages)) {
             return s3Service.uploadImages(postImages, s3Config.getPostImageFolderName());
         }
 
         return "";
+    }
+
+    private boolean checkImageFilesEmpty(List<MultipartFile> postImages) {
+        MultipartFile multipartFile = postImages.get(0);
+        String originFileName = multipartFile.getOriginalFilename();
+
+        if (Objects.equals(originFileName, "")) {
+            return false;
+        }
+        return true;
     }
 
     private User findUser(Long userId) {

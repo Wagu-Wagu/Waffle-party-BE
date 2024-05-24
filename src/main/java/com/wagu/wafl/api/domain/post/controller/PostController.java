@@ -50,11 +50,4 @@ public class PostController {
         val response = postService.getOttPosts(ottTags);
         return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_GET_POST_LIST.getMessage(), response));
     }
-
-    @PostMapping("/s3test")
-    public ResponseEntity<ApiResponse> s3TestController(
-            @RequestPart(required = false) List<MultipartFile> multipartFiles) {
-        val response = s3Service.uploadImages(multipartFiles, "post");
-        return ResponseEntity.ok(ApiResponse.success("ok", response));
-    }
 }
