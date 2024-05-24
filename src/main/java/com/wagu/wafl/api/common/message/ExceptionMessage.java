@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public enum ExceptionMessage {
     // auth
+    INVALID_TOKEN("유효하지 않은 토큰입니다."),
     INVALID_KAKAO_TOKEN("유효하지 않은 카카오 토큰입니다."),
 
     // s3 upload
