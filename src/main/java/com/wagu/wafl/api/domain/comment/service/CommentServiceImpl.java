@@ -40,7 +40,7 @@ public class CommentServiceImpl implements CommentService {
     public void createCommentReply(Long userId, CreateCommentReplyDTO request) {
         User commentReplyCreateUser = findUser(userId);
         Post commentReplyPost = findPost(request.postId());
-        Comment commentReplyComment = findComment(request.commentId());
+        Comment commentReplyComment = findComment(request.parentCommentId());
 
         Comment newComment = CreateCommentReplyDTO.
                 toEntity(
