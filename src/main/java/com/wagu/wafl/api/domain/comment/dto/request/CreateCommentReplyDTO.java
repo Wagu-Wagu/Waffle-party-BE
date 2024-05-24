@@ -15,17 +15,17 @@ public record CreateCommentReplyDTO(
         boolean isSecret,
 
         @NotNull(message = "댓글 아이디는 null일 수 없습니다.")
-        Long commentId,
+        Long parentCommentId,
 
         @NotBlank(message = "댓글 내용은 빈 string일 수 없습니다.")
         @Size(min = 1, message = "댓글은 최소 1글자 이상입니다.")
         String content
 ) {
-    public static Comment toEntity(User user, Post post, Comment comment, String content, boolean isSecret) {
+    public static Comment toEntity(User user, Post post, Comment parentComment, String content, boolean isSecret) {
             return Comment.builder()
                     .user(user)
                     .post(post)
-                    .parentComment(comment)
+                    .parentComment(parentComment)
                     .content(content)
                     .isSecret(isSecret)
                     .build();
