@@ -6,6 +6,8 @@ import com.wagu.wafl.api.domain.user.entity.User;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -50,6 +52,16 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
+
+    @Builder
+    public Post(User user, String title, String content, String photoes, OttTag ottTag, String thumbNail) {
+        setUser(user);
+        this.title = title;
+        this.content = content;
+        this.photoes = photoes;
+        this.ottTag = ottTag;
+        this.thumbNail = thumbNail;
+    }
 
     public void setUser(User user) {
         if (this.user!=null) {
