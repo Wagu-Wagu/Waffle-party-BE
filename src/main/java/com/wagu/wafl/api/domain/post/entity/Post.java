@@ -55,7 +55,7 @@ public class Post extends BaseEntity {
 
     @Builder
     public Post(User user, String title, String content, String photoes, OttTag ottTag, String thumbNail) {
-        this.setUser(user);
+        setUser(user);
         this.title = title;
         this.content = content;
         this.photoes = photoes;
