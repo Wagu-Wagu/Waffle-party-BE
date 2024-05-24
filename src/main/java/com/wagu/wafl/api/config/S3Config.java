@@ -34,6 +34,12 @@ public class S3Config {
     @Value("${s3.folder.user}")
     private String userImageFolderName;
 
+    @Value("${s3.baseURL.post}")
+    private String postS3ImageBaseURL;
+
+    @Value("${s3.folder.post}")
+    private String postImageFolderName;
+
     @Bean
     public BasicAWSCredentials createAwsCredentials(){
         return new BasicAWSCredentials(accessKey,secretKey);

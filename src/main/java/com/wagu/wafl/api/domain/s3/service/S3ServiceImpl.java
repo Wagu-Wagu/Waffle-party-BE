@@ -70,7 +70,9 @@ public class S3ServiceImpl implements S3Service {
                 try (InputStream inputStream = multipartFile.getInputStream()) {
                     amazonS3.putObject(new PutObjectRequest(bucket + "/" + folder + "/image", fileName, inputStream, objectMetadata)
                             .withCannedAcl(CannedAccessControlList.PublicRead));
-                    s3Urls.add(amazonS3.getUrl(bucket + "/" + folder + "/image", fileName).toString());
+                    String imageUrl = amazonS3.getUrl(bucket + "/" + folder + "/image", fileName).toString();
+                    String splitedUrl = splitPostUrl(imageUrl);
+                    s3Urls.add(splitedUrl);
                 } catch (IOException e) {
                     throw new AwsException(ExceptionMessage.NOT_FOUND_IMAGE_TO_UPLOAD.getMessage(), HttpStatus.NOT_FOUND);
                 }
@@ -81,6 +83,11 @@ public class S3ServiceImpl implements S3Service {
         return s3Urls.stream()
                 .map(s3Url -> '"'+s3Url+'"')
                 .collect(Collectors.joining(",","[","]"));
+    }
+
+    private String splitPostUrl(String postS3Url) {
+        String url = postS3Url.split(s3Config.getPostS3ImageBaseURL())[1];
+        return url;
     }
 
 
