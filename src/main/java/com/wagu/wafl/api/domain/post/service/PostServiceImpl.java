@@ -66,9 +66,11 @@ public class PostServiceImpl implements PostService{
     private String savePostImagesAndGetUrl(List<MultipartFile> postImages) {
         MultipartFile multipartFile = postImages.get(0);
         String originFileName = multipartFile.getOriginalFilename();
+
         if (!postImages.isEmpty() && originFileName != "") {
             return s3Service.uploadImages(postImages, "photos");
         }
+
         return "";
     }
 

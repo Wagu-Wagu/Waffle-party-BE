@@ -32,8 +32,8 @@ public class PostController {
     @Operation( summary = "글 작성하기 ",
             description = "글을 작성합니다.."
     )
-    @PostMapping("create")
-    public ResponseEntity<ApiResponse> createPosts(
+    @PostMapping("")
+    public ResponseEntity<ApiResponse> createPost(
             @UserId Long userId,
             @ModelAttribute @Valid CreatePostRequestDTO request
             ) {
@@ -54,7 +54,7 @@ public class PostController {
     @PostMapping("/s3test")
     public ResponseEntity<ApiResponse> s3TestController(
             @RequestPart(required = false) List<MultipartFile> multipartFiles) {
-        val response = s3Service.uploadImages(multipartFiles, "photos");
+        val response = s3Service.uploadImages(multipartFiles, "post");
         return ResponseEntity.ok(ApiResponse.success("ok", response));
     }
 }
