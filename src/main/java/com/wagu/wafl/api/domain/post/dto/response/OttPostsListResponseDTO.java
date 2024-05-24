@@ -5,7 +5,7 @@ import com.wagu.wafl.api.domain.post.entity.Post;
 import com.wagu.wafl.api.domain.post.util.PhotoesParsingToList;
 import lombok.Builder;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -28,7 +28,7 @@ record PostVO(
         String content,
         List<String> photoes,
         String nickName,
-        LocalDate createdAt,
+        LocalDateTime createdAt,
         Long commentCount,
         String thumbNail
 ) {
@@ -44,7 +44,7 @@ record PostVO(
                 .content(post.getContent())
                 .photoes(photoes)
                 .nickName(nickName)
-                .createdAt(LocalDate.from(post.getCreatedAt()))
+                .createdAt(post.getCreatedAt())
                 .commentCount(post.getCommentCount())
                 .thumbNail(post.getThumbNail())
                 .build();

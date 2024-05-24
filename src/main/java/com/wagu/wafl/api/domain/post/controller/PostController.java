@@ -27,7 +27,6 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-    private final S3Service s3Service;
 
     @Operation( summary = "글 작성하기 ",
             description = "글을 작성합니다.."
