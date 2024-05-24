@@ -3,7 +3,9 @@ package com.wagu.wafl.api.domain.post.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wagu.wafl.api.common.exception.PostException;
+import com.wagu.wafl.api.common.exception.UserException;
 import com.wagu.wafl.api.common.message.ExceptionMessage;
+import com.wagu.wafl.api.config.S3Config;
 import com.wagu.wafl.api.domain.post.dto.request.CreatePostRequestDTO;
 import com.wagu.wafl.api.domain.post.dto.response.OttPostsListResponseDTO;
 import com.wagu.wafl.api.domain.post.entity.OttTag;
@@ -28,6 +30,7 @@ public class PostServiceImpl implements PostService{
     private final PostRepository postRepository;
     private final S3Service s3Service;
     private final UserRepository userRepository;
+    private final S3Config s3Config;
 
     @Override
     public List<OttPostsListResponseDTO> getOttPosts(List<OttTag> request) {
@@ -68,7 +71,7 @@ public class PostServiceImpl implements PostService{
         String originFileName = multipartFile.getOriginalFilename();
 
         if (!postImages.isEmpty() && originFileName != "") {
-            return s3Service.uploadImages(postImages, "photos");
+            return s3Service.uploadImages(postImages, s3Config.getPostImageFolderName());
         }
 
         return "";
@@ -76,6 +79,6 @@ public class PostServiceImpl implements PostService{
 
     private User findUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new PostException(ExceptionMessage.NOT_FOUND_USER.getMessage(), HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new UserException(ExceptionMessage.NOT_FOUND_USER.getMessage(), HttpStatus.NOT_FOUND));
     }
 }
