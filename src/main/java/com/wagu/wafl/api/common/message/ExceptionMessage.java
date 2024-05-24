@@ -17,6 +17,7 @@ public enum ExceptionMessage {
 
 
     /* user */
+    ALREADY_DID_ONBOARD("이미 온보딩을 한 유저입니다."),
     NOT_FOUND_USER("id에 해당하는 유저를 찾을 수 없습니다."),
     ALREADY_EXIST_NICKNAME("이미 존재하는 유저명 입니다."),
     IS_THE_SAME_NICKNAME("바꾸는 닉네임과 현재 닉네임이 일치합니다."),
