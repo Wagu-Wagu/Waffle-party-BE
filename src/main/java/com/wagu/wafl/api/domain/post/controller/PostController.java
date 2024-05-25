@@ -55,9 +55,8 @@ public class PostController {
             description = "게시글 내용 및 댓글 정보를 조회합니다."
     )
     @GetMapping("/detail/{postId}")
-
-    public ResponseEntity<ApiResponse> getPostDetail(@UserId Long userId, @PathVariable Long postId) {
-        val response = postService.getPostDetail(userId, postId);
+    public ResponseEntity<ApiResponse> getPostDetail(@RequestHeader(value = "Authorization", required = false) String accessToken, @PathVariable Long postId) { //@UserId Long userId
+        val response = postService.getPostDetail(accessToken, postId);
         return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_GET_POST_DETAIL.getMessage(), response));
     }
 }

@@ -11,5 +11,5 @@ public interface PostService {
 
     List<OttPostsListResponseDTO> getOttPosts(List<OttTag> request);
     void createPost(Long userId, CreatePostRequestDTO createPostRequestDTO);
-    PostDetailResponseDTO getPostDetail(Long userId, Long postId);
+    PostDetailResponseDTO getPostDetail(String accessToken, Long postId);
 }
