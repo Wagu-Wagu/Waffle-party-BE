@@ -2,6 +2,7 @@ package com.wagu.wafl.api.domain.auth.service;
 
 import com.wagu.wafl.api.config.jwt.JwtTokenManager;
 import com.wagu.wafl.api.domain.auth.dto.response.SocialLoginResponseDTO;
+import com.wagu.wafl.api.domain.auth.kakao.response.KakaoUserResponse;
 import com.wagu.wafl.api.domain.user.entity.AuthProvider;
 import com.wagu.wafl.api.domain.user.entity.User;
 import com.wagu.wafl.api.domain.user.repository.AuthProviderRepository;
@@ -21,17 +22,19 @@ public class SocialCommonServiceImpl implements SocialCommonService {
     private final JwtTokenManager jwtTokenManager;
 
     private SocialLoginResponseDTO SignUpAndLogin(
-            String thirdPartyUserId,
+            KakaoUserResponse kakaoUserResponse,
             String providerType
     ) {
-        AuthProvider authProvider = authProviderRepository.save(AuthProvider.builder() // todo - 이유 체크
-                .id(thirdPartyUserId)
+        AuthProvider authProvider = authProviderRepository.save(
+                AuthProvider.builder() // todo - 이유 체크
+                .id(kakaoUserResponse.id())
                 .providerType(providerType)
                 .build());
         authProviderRepository.save(authProvider);
 
         val user = userRepository.save(
                 User.builder()
+                        .email(kakaoUserResponse.kakao_account().getEmail())
                         .authProvider(authProvider)
                         .build());
 
@@ -48,13 +51,13 @@ public class SocialCommonServiceImpl implements SocialCommonService {
 
     @Transactional
     @Override
-    public SocialLoginResponseDTO waguLogin(String thirdPartUserId, String providertype) {
-        val authProvider = authProviderRepository.searchAuthProviderById(thirdPartUserId);
+    public SocialLoginResponseDTO waguLogin(KakaoUserResponse kakaoUserResponse, String providertype) {
+        val authProvider = authProviderRepository.searchAuthProviderById(kakaoUserResponse.id());
 
-        if (Objects.nonNull(authProvider)) {
-            return reLogin(authProvider.getUser());
+        if (authProvider.isPresent()) {
+            return reLogin(authProvider.get().getUser());
         }
 
-        return SignUpAndLogin(thirdPartUserId, providertype);
+        return SignUpAndLogin(kakaoUserResponse, providertype);
     }
 }
