@@ -26,6 +26,6 @@ public class KakaoSocialService {
             throw new AuthException(ExceptionMessage.INVALID_KAKAO_TOKEN.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        return socialCommonService.waguLogin(userResponse.id(), request.providerType());
+        return socialCommonService.waguLogin(userResponse, request.providerType());
     }
 }
