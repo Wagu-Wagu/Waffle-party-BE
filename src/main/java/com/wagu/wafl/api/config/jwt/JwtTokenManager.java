@@ -41,8 +41,10 @@ public class JwtTokenManager {
         try {
             getBody(token);
             return true;
-        } catch (ExpiredJwtException | SignatureException e) { // 만료된 토큰을 잡는데,
+        } catch (SignatureException e) { // 만료된 토큰을 잡는데,
             throw new AuthException(ExceptionMessage.INVALID_TOKEN.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ExpiredJwtException e) {
+            throw new AuthException(ExceptionMessage.EXPIRED_TOKEN.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
