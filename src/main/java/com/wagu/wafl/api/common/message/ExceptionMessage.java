@@ -8,6 +8,9 @@ import lombok.Getter;
 public enum ExceptionMessage {
     // auth
     INVALID_KAKAO_TOKEN("유효하지 않은 카카오 토큰입니다."),
+    INVALID_TOKEN("유효하지 않은 토큰입니다."),
+    EXPIRED_TOKEN("만료된 토큰입니다."),
+    NOT_PARSED_TO_ID("Id로 변환하지 못했습니다."),
 
     // s3 upload
     NOT_FOUND_IMAGE_TO_UPLOAD("등록할 이미지를 찾을 수 없습니다."),

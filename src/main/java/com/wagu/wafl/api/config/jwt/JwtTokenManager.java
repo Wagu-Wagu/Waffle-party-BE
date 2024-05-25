@@ -1,21 +1,23 @@
 package com.wagu.wafl.api.config.jwt;
 
+import com.wagu.wafl.api.common.exception.AuthException;
 import com.wagu.wafl.api.common.message.ExceptionMessage;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.xml.bind.DatatypeConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.bouncycastle.jcajce.BCFKSLoadStoreParameter;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.security.SignatureException;
 import java.sql.Date;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -37,12 +39,12 @@ public class JwtTokenManager {
 
     public boolean verifyToken(String token) {
         try {
-            final Claims claims = getBody(token); // to 주영 : 이 부분 변수할당 필요 없어보임,
-                                            // UserIdResolver에서 verify(token)이후
-                                            // jwtTokenManager.getJwtContents(token); 하는 일 똑같이 하는 꼴
+            getBody(token);
             return true;
-        } catch (ExpiredJwtException e) { // 만료된 토큰을 잡는데,
-            return false;
+        } catch (SignatureException e) { // 만료된 토큰을 잡는데,
+            throw new AuthException(ExceptionMessage.INVALID_TOKEN.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ExpiredJwtException e) {
+            throw new AuthException(ExceptionMessage.EXPIRED_TOKEN.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
