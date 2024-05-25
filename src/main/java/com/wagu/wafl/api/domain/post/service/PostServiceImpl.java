@@ -1,14 +1,12 @@
 package com.wagu.wafl.api.domain.post.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wagu.wafl.api.common.exception.PostException;
 import com.wagu.wafl.api.common.exception.UserException;
 import com.wagu.wafl.api.common.message.ExceptionMessage;
 import com.wagu.wafl.api.config.S3Config;
 import com.wagu.wafl.api.domain.comment.entity.Comment;
 import com.wagu.wafl.api.domain.comment.repository.CommentRepository;
 import com.wagu.wafl.api.domain.post.dto.request.CreatePostRequestDTO;
+import com.wagu.wafl.api.domain.post.dto.response.PostDetailCommentVO;
 import com.wagu.wafl.api.domain.post.dto.response.OttPostsListResponseDTO;
 import com.wagu.wafl.api.domain.post.dto.response.PostDetailResponseDTO;
 import com.wagu.wafl.api.domain.post.entity.OttTag;
@@ -19,7 +17,6 @@ import com.wagu.wafl.api.domain.user.entity.User;
 import com.wagu.wafl.api.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -70,41 +67,121 @@ public class PostServiceImpl implements PostService{
                 .build());
     }
 
+    // todo - 게시글을 올린유저가 삭제되면 어떻게 보일지
+    // todo - comment 올린 유저가 삭제되면 어떻게 보일지
+    // todo - 댓글, 답댓글이 삭제되면 어떻게 보일지
     @Override
     public PostDetailResponseDTO getPostDetail(Long userId, Long postId) {
-        findPost(postId);
+        Post post = findPost(postId);
 
-        // todo - 게시글을 올린유저가 삭제되면 어떻게 보일지
-        // todo - comment 올린 유저가 삭제되면 어떻게 보일지
-        // todo - 댓글, 답댓글이 삭제되면 어떻게 보일지
-        /**
-         * 1. 게시글에 관련된 코멘트들 갖고오기
-         * 2. 코맨트 관련 '보이는 여부'
-         */
         List<Comment> resultComments = new ArrayList<>();
         List<Comment> parentComments = commentRepository.findAllCommentByPostId(postId);
 
-        for(Comment parentComment : parentComments) { //todo - 성능저하 가능성, isActive여부
+        for (Comment parentComment : parentComments) { //todo - 성능저하 가능성, isActive여부
             List<Comment> subComments = new ArrayList<>();
             subComments.add(parentComment);
             parentComment.getSubComments().sort(Comparator.comparing(Comment::getCreatedAt));
             subComments.addAll(parentComment.getSubComments());
             resultComments.addAll(subComments);
         }
-        for(Comment comment : resultComments) {
-            System.out.println(comment.getId());
-            System.out.println(comment.getParentComment()==null);
-            System.out.println(comment.getContent());
-            System.out.println(comment.getCreatedAt());
-        }
-        /**
-         * 1. 게시글에 관련된 코멘트들 갖고오기
-         * 2. 코맨트 관련 '보이는 여부'
-         * parent댓글만 갖고오고, parent댓글 리스트들 뿌리기도 괜찮을듯,
-         */
-        return null;
 
+        // validate IsVisible
+        List<PostDetailCommentVO> commentVOs = isVisibleSecretComment(post.getUser().getId(), userId, resultComments);
+            return PostDetailResponseDTO.of(post, Objects.equals(userId, post.getUser().getId()), commentVOs);
+        }
+
+
+    List<PostDetailCommentVO> isVisibleSecretComment(Long postUserId, Long tokenUserId, List<Comment> comments) {
+        if (tokenUserId == null) { // todo => 서비스 미가입자
+            return comments.stream().map(PostDetailCommentVO::noAccessSecretComment).toList();
+        }
+
+        if (Objects.equals(tokenUserId, postUserId)) { // 글 쓴 사람 일 경우 , 어드민 유저일 경우
+            return comments.stream().map(
+                            (c) -> PostDetailCommentVO.fullAccessSecretComment(c, Objects.equals(c.getUser().getId(), tokenUserId)))
+                    .toList();
+        }
+
+        List<PostDetailCommentVO> commentVOS = new ArrayList<>();
+        for(Comment comment : comments) {
+            PostDetailCommentVO commentVO;
+
+            if(comment.getIsSecret()) { //비밀 댓글이라면
+
+                if(Objects.equals(comment.getUser().getId(), tokenUserId))  { // 내가 쓴 비밀댓글이라면
+                    commentVO = PostDetailCommentVO.isVisibleSecretComment(comment, true, true);
+                }
+               else if (isParentCommentUser(comment, tokenUserId)) { // 내가 작성한 비밀 (답)댓글이 아니지만, 내가 쓴 댓글의 비밀 답댓글일 경우
+                    commentVO = PostDetailCommentVO.isVisibleSecretComment(comment, false, true);
+                }
+                else{
+                    // 비밀 댓글인데, 내가 볼 수 없는 경우
+                    commentVO = PostDetailCommentVO.isVisibleSecretComment(comment, false, false);
+                }
+            }
+            else{ // 비밀 댓글이 아니라면
+                commentVO = PostDetailCommentVO.isVisibleSecretComment(comment, Objects.equals(comment.getUser().getId(), tokenUserId), true);
+            }
+            commentVOS.add(commentVO);
+        }
+        return commentVOS;
     }
+
+    private boolean isParentCommentUser(Comment comment, Long tokenUserId) { // 내가 쓴 댓글
+        return comment.getParentComment() != null // 답댓글인지 판단
+                && Objects.equals(comment.getParentComment().getUser().getId(), tokenUserId); // 내가 쓴 댓글의 답댓글일경우
+    }
+    /*
+         비밀 댓글인 경우
+         글 작성자
+         비밀 댓글 작성자 본인
+         admin user
+
+         비밀 답댓글인 경우
+         글 작성자
+         비밀 답댓글 작성자 본인
+         해당 답댓글이 달린 댓글 작성자
+         admin user
+
+         비밀 댓글일 경우 ,
+         if (유저 ID가 없을 경우) {
+         모든 댓글이 안보임
+         }
+
+         글 작성자 , admin유저,
+         if ( userId == post.getUser().getId() || user.Role==ADMIN ) {
+            모든 비밀 댓글 isVisible == true
+         }
+
+         글 작성자는 아니지만, 비밀 댓글을 쓴 사람일 경우
+         if( userId != post.getUser().getId() && commnet.getParentCommnet()==null && comment.getUser().getId() == userId ) {
+            댓글, 답댓글 모두 isVisible == true
+         }
+
+         글 작성자는 아니지만, 비밀 답댓글을 쓴 사람 일 경우
+        if(userId!=post.getUser().getId() && commnet.getParentCommnet()!=null && commnet.getUser().getId() == userId) {
+           답댓글에 해당하는 거만 isVisible == true
+
+         */
+
+
+        /* 경우의 수
+         A 댓글
+         B 비밀답댓글 볼 수 있는 사람 : A, B
+         C 비밀 답댓글 : 볼 수 있는 사람 A, C
+
+         M Post
+         C 댓글
+         A답댓글
+         B 비밀 답댓글 => 볼 수 있는 사람 : C, M, B
+
+
+         A Post
+         C 댓글
+         A답댓글
+         B 비밀 답댓글 => 볼 수 있는 사람 : C, A, B
+
+         */
 
     private String savePostImagesAndGetUrl(List<MultipartFile> postImages) {
         if (checkImageFilesEmpty(postImages)) {
