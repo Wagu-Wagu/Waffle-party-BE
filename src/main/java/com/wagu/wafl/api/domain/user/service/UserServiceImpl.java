@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService{
     public void editUserImage(Long userId, MultipartFile requestFile) {
         User user = findUser(userId);
 
-        if(Objects.isNull(requestFile)) {
+        if(checkImageFileEmpty(requestFile)) {
             user.setUserImage("");
             return;
         }
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService{
     public List<GetMyCommentResponseDTO> getMyComments(Long userId) {
         val user = userRepository.findUserAndCommentOrderByCreatedAt(userId);
 
-        if(!user.isPresent()) {
+        if(user.isEmpty()) {
             return null;
         }
 
@@ -102,6 +102,15 @@ public class UserServiceImpl implements UserService{
         return comments.stream().map((c) -> {
             return GetMyCommentResponseDTO.of(c.getPost(), c);
         }).collect(Collectors.toList());
+    }
+
+    private boolean checkImageFileEmpty(MultipartFile postImage) {
+        String originFileName = postImage.getOriginalFilename();
+
+        if (Objects.equals(originFileName, "")) {
+            return true;
+        }
+        return false;
     }
 
     private String splitUserURL(String UserS3URL) {
