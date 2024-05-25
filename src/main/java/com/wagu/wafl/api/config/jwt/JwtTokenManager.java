@@ -65,4 +65,15 @@ public class JwtTokenManager {
         final Claims claims = getBody(token);
         return (String) claims.get("sub"); // claims에 "sub"에 userId가 들어가는데 위에서 .subject를 수정해야 하나?
     }
+
+    public Long getUserIdFromJwt(String token) {
+        verifyToken(token);
+
+        final String tokenContents = getJwtContents(token);
+        try{
+            return Long.parseLong(tokenContents);
+        } catch (NumberFormatException e) {
+            throw new AuthException(ExceptionMessage.NOT_PARSED_TO_ID.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

@@ -3,6 +3,7 @@ package com.wagu.wafl.api.domain.post.service;
 import com.wagu.wafl.api.common.exception.UserException;
 import com.wagu.wafl.api.common.message.ExceptionMessage;
 import com.wagu.wafl.api.config.S3Config;
+import com.wagu.wafl.api.config.jwt.JwtTokenManager;
 import com.wagu.wafl.api.domain.comment.entity.Comment;
 import com.wagu.wafl.api.domain.comment.repository.CommentRepository;
 import com.wagu.wafl.api.domain.post.dto.request.CreatePostRequestDTO;
@@ -32,6 +33,8 @@ public class PostServiceImpl implements PostService{
     private final UserRepository userRepository;
     private final S3Config s3Config;
     private final CommentRepository commentRepository;
+    private final JwtTokenManager jwtTokenManager;
+    private final Long IS_NOT_SERVICE_USER = -1L;
 
     @Override
     public List<OttPostsListResponseDTO> getOttPosts(List<OttTag> request) {
@@ -71,7 +74,7 @@ public class PostServiceImpl implements PostService{
     // todo - comment 올린 유저가 삭제되면 어떻게 보일지
     // todo - 댓글, 답댓글이 삭제되면 어떻게 보일지
     @Override
-    public PostDetailResponseDTO getPostDetail(Long userId, Long postId) {
+    public PostDetailResponseDTO getPostDetail(String accessToken, Long postId) {
         Post post = findPost(postId);
 
         List<Comment> resultComments = new ArrayList<>();
@@ -85,14 +88,23 @@ public class PostServiceImpl implements PostService{
             resultComments.addAll(subComments);
         }
 
+        Long userId = verifyServiceUser(accessToken);
+
         // validate IsVisible
         List<PostDetailCommentVO> commentVOs = isVisibleSecretComment(post.getUser().getId(), userId, resultComments);
             return PostDetailResponseDTO.of(post, Objects.equals(userId, post.getUser().getId()), commentVOs);
         }
 
 
+    private Long verifyServiceUser(String accessToken) {
+        if(accessToken!=null) {
+            return  jwtTokenManager.getUserIdFromJwt(accessToken);
+        }
+        return IS_NOT_SERVICE_USER;
+    }
+
     List<PostDetailCommentVO> isVisibleSecretComment(Long postUserId, Long tokenUserId, List<Comment> comments) {
-        if (tokenUserId == null) { // todo => 서비스 미가입자
+        if (Objects.equals(tokenUserId, IS_NOT_SERVICE_USER)) { // todo => 서비스 미가입자
             return comments.stream().map(PostDetailCommentVO::noAccessSecretComment).toList();
         }
 
