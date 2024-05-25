@@ -23,6 +23,7 @@ public record OttPostsListResponseDTO(
 
 @Builder
 record PostVO(
+        Long postId,
         OttTag ottTag,
         String title,
         String content,
@@ -39,6 +40,7 @@ record PostVO(
             photoes = PhotoesParsingToList.toList(post.getPhotoes());
         }
         return PostVO.builder()
+                .postId(post.getId())
                 .ottTag(post.getOttTag())
                 .title(post.getTitle())
                 .content(post.getContent())
