@@ -49,4 +49,15 @@ public class PostController {
         val response = postService.getOttPosts(ottTags);
         return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_GET_POST_LIST.getMessage(), response));
     }
+
+
+    @Operation( summary = "게시글 상세 정보 조회",
+            description = "게시글 내용 및 댓글 정보를 조회합니다."
+    )
+    @GetMapping("/detail/{postId}")
+
+    public ResponseEntity<ApiResponse> getPostDetail(@UserId Long userId, @PathVariable Long postId) {
+        val response = postService.getPostDetail(userId, postId);
+        return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_GET_POST_DETAIL.getMessage(), response));
+    }
 }

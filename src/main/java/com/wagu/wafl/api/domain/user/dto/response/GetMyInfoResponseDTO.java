@@ -16,10 +16,12 @@ public record GetMyInfoResponseDTO(
 }
 
 @Builder
-record UserInfoVO(String userImage, String email, int postCount, int commentCount) {
+record UserInfoVO(Long userId, String userImage, String nickName, String email, int postCount, int commentCount) {
     public static UserInfoVO of(User user){
         return UserInfoVO.builder()
+                .userId(user.getId())
                 .userImage(user.getUserImage())
+                .nickName(user.getNickName())
                 .email(user.getEmail())
                 .postCount(user.getPosts().size())
                 .commentCount(user.getComments().size())
