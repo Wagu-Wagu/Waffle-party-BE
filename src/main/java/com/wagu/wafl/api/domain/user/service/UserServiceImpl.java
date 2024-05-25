@@ -53,6 +53,13 @@ public class UserServiceImpl implements UserService{
         user.setNickName(request.nickName());
     }
 
+    @Override
+    public boolean isOnboard(Long userId) {
+        User user = findUser(userId);
+
+        return !Objects.equals(user.getNickName(), null);
+    }
+
     @Transactional
     @Override
     public void editUserNickName(Long userId, EditUserNickNameRequestDto request) {
