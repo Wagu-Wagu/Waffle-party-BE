@@ -40,13 +40,15 @@ public class SocialCommonServiceImpl implements SocialCommonService {
 
         val accessToken = jwtTokenManager.createAccessToken(user.getId());
 
-        return SocialLoginResponseDTO.of(accessToken);
+        return SocialLoginResponseDTO.of(accessToken, false);
     }
 
     private SocialLoginResponseDTO reLogin(User user) {
         val accessToken = jwtTokenManager.createAccessToken(user.getId());
-
-        return SocialLoginResponseDTO.of(accessToken);
+        if (Objects.equals(user.getNickName(), null)) {
+            return SocialLoginResponseDTO.of(accessToken, false);
+        }
+        return SocialLoginResponseDTO.of(accessToken, true);
     }
 
     @Transactional

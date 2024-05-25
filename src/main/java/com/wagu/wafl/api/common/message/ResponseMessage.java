@@ -17,6 +17,7 @@ public enum ResponseMessage {
     SUCCESS_GET_MY_COMMENTS("유저 - 내가 작성한 댓글 리스트 정보 조회를 성공했습니다."),
     SUCCESS_GET_MY_POSTS("유저 - 내가 작성한 글 리스트 정보 조회를 성공했습니다."),
     SUCCESS_USER_ONBOARD("유저 온보딩을 성공했습니다."),
+    SUCCESS_GET_IS_ONBOARD("유저 온보딩 여부 조회를 성공했습니다."),
 
     //post
     SUCCESS_CREATE_POST("게시글 생성을 성공했습니다."),

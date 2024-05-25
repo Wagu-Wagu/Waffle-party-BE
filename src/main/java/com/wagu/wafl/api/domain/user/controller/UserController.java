@@ -83,4 +83,12 @@ public class UserController {
         val response = userService.getMyPosts(userId);
         return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_GET_MY_POSTS.getMessage(), response));
     }
+
+    @Operation( summary = "온보딩 여부 확인 api",
+            description = "온보딩을 한 유저인지 아닌 유저인지 return 합니다.")
+    @GetMapping("/isOnboard")
+    ResponseEntity<ApiResponse> isOnboard(@UserId Long userId) {
+        val response = userService.isOnboard(userId);
+        return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_GET_IS_ONBOARD.getMessage(), response));
+    }
 }
