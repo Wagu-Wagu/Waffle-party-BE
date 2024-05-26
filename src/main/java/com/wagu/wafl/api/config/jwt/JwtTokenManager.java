@@ -1,6 +1,7 @@
 package com.wagu.wafl.api.config.jwt;
 
 import com.wagu.wafl.api.common.exception.AuthException;
+import com.wagu.wafl.api.common.exception.AwsException;
 import com.wagu.wafl.api.common.message.ExceptionMessage;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -45,6 +46,8 @@ public class JwtTokenManager {
             throw new AuthException(ExceptionMessage.INVALID_TOKEN.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (ExpiredJwtException e) {
             throw new AuthException(ExceptionMessage.EXPIRED_TOKEN.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            throw new AwsException(ExceptionMessage.INVALID_TOKEN.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
