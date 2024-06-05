@@ -46,7 +46,6 @@ OTT를 같이 보면서 채팅하는 `왓챠파티`, `Teleparty`, `Screena`에�
 
 ### 👨‍👦 백엔드 팀원 
 <table>
-
   <tr>
     <td align="center">
       <a href="https://github.com/GaHee99">
