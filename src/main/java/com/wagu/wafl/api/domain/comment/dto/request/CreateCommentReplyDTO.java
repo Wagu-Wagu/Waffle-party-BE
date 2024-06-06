@@ -21,13 +21,13 @@ public record CreateCommentReplyDTO(
         @Size(min = 1, message = "댓글은 최소 1글자 이상입니다.")
         String content
 ) {
-    public static Comment toEntity(User user, Post post, Comment parentComment, String content, boolean isSecret) {
+    public static Comment toEntity(User user, Post post, Comment parentComment, CreateCommentReplyDTO request) {
             return Comment.builder()
                     .user(user)
                     .post(post)
                     .parentComment(parentComment)
-                    .content(content)
-                    .isSecret(isSecret)
+                    .content(request.content)
+                    .isSecret(request.isSecret)
                     .build();
     }
 }
