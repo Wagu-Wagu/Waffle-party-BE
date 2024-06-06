@@ -4,6 +4,7 @@ import com.wagu.wafl.api.common.ApiResponse;
 import com.wagu.wafl.api.common.message.ResponseMessage;
 import com.wagu.wafl.api.config.resolver.UserId;
 import com.wagu.wafl.api.domain.post.dto.request.CreatePostRequestDTO;
+import com.wagu.wafl.api.domain.post.dto.request.EditPostRequestDTO;
 import com.wagu.wafl.api.domain.post.entity.OttTag;
 import com.wagu.wafl.api.domain.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,5 +59,15 @@ public class PostController {
     public ResponseEntity<ApiResponse> getPostDetail(@RequestHeader(value = "Authorization", required = false) String accessToken, @PathVariable Long postId) { //@UserId Long userId
         val response = postService.getPostDetail(accessToken, postId);
         return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_GET_POST_DETAIL.getMessage(), response));
+    }
+
+    @Operation( summary = "게시글 수정",
+            description = "게시글 내용을 수정합니다."
+    )
+    @PatchMapping("")
+    public ResponseEntity<ApiResponse> editPost(
+            @UserId Long userId, @ModelAttribute @Valid EditPostRequestDTO request) {
+       postService.editPost(userId, request);
+        return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_EDIT_POST.getMessage()));
     }
 }
