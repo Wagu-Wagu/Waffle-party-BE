@@ -94,7 +94,7 @@ public class PostServiceImpl implements PostService{
 
         // validate IsVisible
         List<PostDetailCommentVO> commentVOs = isVisibleSecretComment(post.getUser().getId(), userId, resultComments);
-            return PostDetailResponseDTO.of(post, Objects.equals(userId, post.getUser().getId()), commentVOs);
+        return PostDetailResponseDTO.of(post, Objects.equals(userId, post.getUser().getId()), commentVOs);
         }
 
     @Transactional
