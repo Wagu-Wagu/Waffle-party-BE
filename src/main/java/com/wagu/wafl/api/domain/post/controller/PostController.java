@@ -68,7 +68,7 @@ public class PostController {
     )
     @PatchMapping("")
     public ResponseEntity<ApiResponse> editPost(
-            @UserId Long userId, @ModelAttribute @Valid EditPostRequestDTO request) {
+            @UserId Long userId,@RequestBody @Valid EditPostRequestDTO request) {
        postService.editPost(userId, request);
         return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_EDIT_POST.getMessage()));
     }

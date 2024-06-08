@@ -21,6 +21,7 @@ import com.wagu.wafl.api.domain.s3.service.S3Service;
 import com.wagu.wafl.api.domain.user.entity.User;
 import com.wagu.wafl.api.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -106,9 +107,14 @@ public class PostServiceImpl implements PostService{
         Post post = findPost(request.postId());
         validatePostOwner(userId, post);
 
-        //S3 upload
-        String imageUrls = savePostImagesAndGetUrl(request.postImages());
-        String thumbNail = getThumbNail(imageUrls);
+        String thumbNail = "";
+        String imageUrls = "";
+        if(!request.postImages().isEmpty()) {
+            thumbNail = getThumbNail(request.postImages().get(0));
+            imageUrls = request.postImages().stream()
+                    .map(s3Url -> '"'+s3Url+'"')
+                    .collect(Collectors.joining(",","[","]"));
+        }
 
         post.setTitle(request.title());
         post.setContent(request.content());
