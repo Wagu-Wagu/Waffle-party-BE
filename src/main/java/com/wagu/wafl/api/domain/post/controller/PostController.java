@@ -5,6 +5,8 @@ import com.wagu.wafl.api.common.message.ResponseMessage;
 import com.wagu.wafl.api.config.resolver.UserId;
 import com.wagu.wafl.api.domain.post.dto.request.CreatePostRequestDTO;
 import com.wagu.wafl.api.domain.post.dto.request.EditPostRequestDTO;
+import com.wagu.wafl.api.domain.post.dto.request.UploadPostImageRequestDTO;
+import com.wagu.wafl.api.domain.post.dto.response.UploadPostImageResponseDTO;
 import com.wagu.wafl.api.domain.post.entity.OttTag;
 import com.wagu.wafl.api.domain.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -70,4 +72,15 @@ public class PostController {
        postService.editPost(userId, request);
         return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_EDIT_POST.getMessage()));
     }
+
+    @Operation( summary = "게시글 사진 업로드",
+            description = "사진을 업로드할 수 있습니다."
+    )
+    @PostMapping("/images")
+    public ResponseEntity<ApiResponse> uploadPostImages(@UserId Long userId,
+                                                  @ModelAttribute @Valid UploadPostImageRequestDTO request) {
+        UploadPostImageResponseDTO response = postService.uploadPostImages(request);
+        return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_UPLOAD_IMAGES.getMessage(), response));
+    }
+
 }
