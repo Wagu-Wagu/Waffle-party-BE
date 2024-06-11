@@ -4,16 +4,20 @@ import com.wagu.wafl.api.common.exception.UserException;
 import com.wagu.wafl.api.common.message.ExceptionMessage;
 import com.wagu.wafl.api.config.S3Config;
 import com.wagu.wafl.api.config.WaguConfig;
+import com.wagu.wafl.api.domain.alert.entity.Alert;
 import com.wagu.wafl.api.domain.comment.entity.Comment;
 import com.wagu.wafl.api.domain.post.entity.Post;
 import com.wagu.wafl.api.domain.s3.service.S3ServiceImpl;
 import com.wagu.wafl.api.domain.user.dto.request.OnboardRequestDTO;
 import com.wagu.wafl.api.domain.user.dto.response.GetMyCommentResponseDTO;
 import com.wagu.wafl.api.domain.user.dto.response.GetMyInfoResponseDTO;
+import com.wagu.wafl.api.domain.user.dto.response.GetMyNewsResponseDTO;
 import com.wagu.wafl.api.domain.user.dto.response.GetMyPostResponseDTO;
 import com.wagu.wafl.api.domain.user.entity.User;
 import com.wagu.wafl.api.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -125,6 +129,19 @@ public class UserServiceImpl implements UserService{
         return comments.stream().map((c) -> {
             return GetMyCommentResponseDTO.of(c.getPost(), c);
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<GetMyNewsResponseDTO> getMyNews(Long userId) {
+        User user = findUser(1L);
+        List<Alert> sortedAlerts = user.getAlerts().stream()
+                .sorted(Comparator.comparing(Alert::getIsRead)
+                        .thenComparing(Alert::getModifiedAt, Comparator.nullsLast(Comparator.naturalOrder())))
+                .toList();
+
+        return sortedAlerts.stream()
+                .map(alert -> GetMyNewsResponseDTO.of(alert.getAlertType(), alert))
+                .collect(Collectors.toList());
     }
 
     private boolean checkImageFileEmpty(MultipartFile postImage) {

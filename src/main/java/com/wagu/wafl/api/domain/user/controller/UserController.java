@@ -91,4 +91,14 @@ public class UserController {
         val response = userService.isOnboard(userId);
         return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_GET_IS_ONBOARD.getMessage(), response));
     }
+
+    @Operation( summary = "내 소식 조회 api", description = "내 소식, 알람 정보들을 조회합니다.")
+    @GetMapping("/my/news")
+    ResponseEntity<ApiResponse> myNews(@UserId Long userId) {
+        val response = userService.getMyNews(userId);
+        return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_GET_MY_NEWS.getMessage(), response));
+    }
+
+//    @Operation( summary = "알람 생긴 글 조회 api", description = "새 알람이 생긴 글을 조회합니다.")
+//    @GetMapping("/my/news/post")
 }

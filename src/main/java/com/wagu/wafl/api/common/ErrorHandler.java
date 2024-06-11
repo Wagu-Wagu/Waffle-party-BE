@@ -1,10 +1,6 @@
 package com.wagu.wafl.api.common;
 
-import com.wagu.wafl.api.common.exception.AuthException;
-import com.wagu.wafl.api.common.exception.AwsException;
-import com.wagu.wafl.api.common.exception.CommentException;
-import com.wagu.wafl.api.common.exception.PostException;
-import com.wagu.wafl.api.common.exception.UserException;
+import com.wagu.wafl.api.common.exception.*;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.http.HttpStatus;
@@ -60,6 +56,12 @@ public class ErrorHandler {
 
     @ExceptionHandler(UserException.class)
     public ResponseEntity<ApiResponse> handleUserException(UserException exception) {
+        ApiResponse response = ApiResponse.fail(exception.getMessage());
+        return new ResponseEntity<>(response, exception.getStatusCode());
+    }
+
+    @ExceptionHandler(AlertException.class)
+    public ResponseEntity<ApiResponse> handleAlertException(AlertException exception) {
         ApiResponse response = ApiResponse.fail(exception.getMessage());
         return new ResponseEntity<>(response, exception.getStatusCode());
     }

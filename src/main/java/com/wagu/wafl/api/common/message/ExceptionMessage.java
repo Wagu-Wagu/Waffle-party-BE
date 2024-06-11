@@ -29,7 +29,10 @@ public enum ExceptionMessage {
     NOT_FOUND_POST("id에 해당하는 게시글을 찾을 수 없습니다."),
 
     // comment
-    NOT_FOUND_COMMENT("id에 해당하는 댓글을 찾을 수 없습니다.");
+    NOT_FOUND_COMMENT("id에 해당하는 댓글을 찾을 수 없습니다."),
+
+    // alert
+    NOT_CREATE_ALERT("알람 생성을 실패하였습니다.");
 
     private final String message;
 }

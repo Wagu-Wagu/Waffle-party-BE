@@ -1,6 +1,10 @@
 package com.wagu.wafl.api.domain.comment.service;
 
+import com.wagu.wafl.api.common.exception.AlertException;
 import com.wagu.wafl.api.common.message.ExceptionMessage;
+import com.wagu.wafl.api.domain.alert.entity.Alert;
+import com.wagu.wafl.api.domain.alert.entity.AlertType;
+import com.wagu.wafl.api.domain.alert.repository.AlertRepository;
 import com.wagu.wafl.api.domain.comment.dto.request.CreateCommentReplyDTO;
 import com.wagu.wafl.api.domain.comment.dto.request.CreatePostCommentDTO;
 import com.wagu.wafl.api.domain.comment.entity.Comment;
@@ -12,8 +16,13 @@ import com.wagu.wafl.api.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -22,7 +31,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
-
+    private final AlertRepository alertRepository;
     @Transactional
     @Override
     public void createPostComment(Long userId, CreatePostCommentDTO request) {
@@ -33,6 +42,8 @@ public class CommentServiceImpl implements CommentService {
                 toEntity(commentCreateUser, commentPost, request.content(), request.isSecret());
         commentRepository.save(newComment);
         commentPost.upCommentCount();
+
+        updateAlert(newComment, AlertType.COMMENT);
     }
 
     @Transactional
@@ -51,6 +62,8 @@ public class CommentServiceImpl implements CommentService {
                         request.isSecret());
         commentRepository.save(newComment);
         commentReplyPost.upCommentCount();
+
+        updateAlert(commentReplyComment, AlertType.REPLY);
     }
 
     private User findUser(Long userId) {
@@ -67,4 +80,89 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND_COMMENT.getMessage()));
     }
+
+    private void updateAlert(Comment comment, AlertType alertType) {
+        try{
+            if (isFirstAlert(comment, alertType)) {
+                createAlert(comment, alertType);
+            } else {
+                updateExistingAlert(comment, alertType);
+            }
+        } catch (AlertException e) {
+            throw new AlertException(ExceptionMessage.NOT_CREATE_ALERT.getMessage(), HttpStatus.BAD_REQUEST); // 어떤 상태코드를 줘야하지?
+        }
+    }
+
+    private boolean isFirstAlert(Comment comment, AlertType alertType) {
+        boolean isFirst = false;
+        User user = comment.getPost().getUser();
+        List<Alert> alerts = user.getAlerts();
+        if (Objects.equals(alertType, AlertType.COMMENT)) {
+            Optional<Alert> targetAlert = alerts.stream()
+                    .filter(alert -> alert.getPost().equals(comment.getPost()) && alert.getAlertType().equals(AlertType.COMMENT))
+                    .findAny();
+            if(targetAlert.isEmpty()) {
+                isFirst = true;
+            }
+        }
+        if (Objects.equals(alertType, AlertType.REPLY)){
+            Optional<Alert> targetAlert = alerts.stream()
+                    .filter(alert -> alert.getPost().equals(comment.getPost()) && alert.getAlertType().equals(AlertType.REPLY))
+                    .findAny();
+            if(targetAlert.isEmpty()) {
+                isFirst = true;
+            }
+        }
+        return isFirst;
+    }
+
+    private void createAlert(Comment comment, AlertType alertType) {
+        Post post = comment.getPost();
+        if (Objects.equals(alertType, AlertType.COMMENT)) {
+            alertRepository.save(Alert.builder()
+                    .user(post.getUser())
+                    .post(post)
+                    .content(post.getTitle())
+                    .alertType(alertType)
+                    .build());
+        }
+        if (Objects.equals(alertType, AlertType.REPLY)) {
+            alertRepository.save(Alert.builder()
+                    .user(post.getUser())
+                    .post(post)
+                    .content(comment.getContent())
+                    .alertType(alertType)
+                    .build());
+        }
+    }
+
+    private void updateExistingAlert(Comment comment, AlertType alertType) {
+        if (Objects.equals(alertType, AlertType.COMMENT)) {
+            Post post = comment.getPost();
+            List<Alert> alerts = post.getUser().getAlerts();
+            Optional<Alert> targetAlert = alerts.stream()
+                    .filter(alert -> alert.getPost().equals(post) && alert.getAlertType().equals(AlertType.COMMENT))
+                    .findAny();
+
+            targetAlert.ifPresent(alert -> {
+                alert.setIsRead(false);
+                alert.plusNewAlertCount();
+            });
+        }
+
+        if(Objects.equals(alertType, AlertType.REPLY)) {
+            Post post = comment.getPost();
+            List<Alert> alerts = post.getUser().getAlerts();
+            Optional<Alert> targetAlert = alerts.stream()
+                    .filter(alert -> alert.getPost().equals(post) && alert.getAlertType().equals(AlertType.REPLY))
+                    .findAny();
+
+            targetAlert.ifPresent(alert -> {
+                alert.setIsRead(false);
+                alert.plusNewAlertCount();
+            });
+        }
+
+    }
+
 }
