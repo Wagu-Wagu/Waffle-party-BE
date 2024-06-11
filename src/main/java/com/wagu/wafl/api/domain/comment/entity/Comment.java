@@ -68,7 +68,16 @@ public class Comment extends BaseEntity {
         if(this.parentComment!=null) {
             parentComment.getSubComments().remove(this);
         }
+        this.parentComment = parentComment;
         parentComment.getSubComments().add(this);
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setIsSecret(boolean isSecret) {
+        this.isSecret = isSecret;
     }
 
     @Builder

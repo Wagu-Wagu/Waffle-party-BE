@@ -5,12 +5,14 @@ import com.wagu.wafl.api.common.message.ResponseMessage;
 import com.wagu.wafl.api.config.resolver.UserId;
 import com.wagu.wafl.api.domain.comment.dto.request.CreateCommentReplyDTO;
 import com.wagu.wafl.api.domain.comment.dto.request.CreatePostCommentDTO;
+import com.wagu.wafl.api.domain.comment.dto.request.EditCommentRequestDTO;
 import com.wagu.wafl.api.domain.comment.service.CommentService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +41,16 @@ public class CommentController {
             @Valid @RequestBody CreateCommentReplyDTO request) {
         commentService.createCommentReply(userId, request);
         return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_CREATE_COMMENT_REPLY.getMessage()));
+    }
+
+    @Operation( summary = "댓글, 답댓글 수정하기",
+            description = "댓글, 답댓글을 수정합니다. ")
+    @PatchMapping("")
+    public ResponseEntity<ApiResponse> editComment(
+            @UserId Long userId,
+            @Valid @RequestBody EditCommentRequestDTO request) {
+        commentService.editComment(userId, request);
+        return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_EDIT_COMMENT.getMessage()));
     }
 
 }

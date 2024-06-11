@@ -27,12 +27,15 @@ public enum ExceptionMessage {
 
     // post
     NOT_FOUND_POST("id에 해당하는 게시글을 찾을 수 없습니다."),
+    IS_NOT_POST_OWNER("작성한 게시글의 주인이 아닙니다."),
 
     // comment
     NOT_FOUND_COMMENT("id에 해당하는 댓글을 찾을 수 없습니다."),
 
     // alert
-    NOT_CREATE_ALERT("알람 생성을 실패하였습니다.");
+    NOT_CREATE_ALERT("알람 생성을 실패하였습니다."),
+    IS_NOT_COMMENT_OWNER("작성한 댓글의 주인이 아닙니다."),
+    IS_NOT_POST_COMMENT("게시글에 등록된 댓글ID가 아닙니다.");
 
     private final String message;
 }

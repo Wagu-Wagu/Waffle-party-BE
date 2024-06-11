@@ -74,4 +74,20 @@ public class Post extends BaseEntity {
     public void upCommentCount() {
         this.commentCount += 1;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public void setContent(String content) {
+        this.content = content;
+    }
+    public void setPhotoes(String photoes) {
+        this.photoes = photoes;
+    }
+    public void setOttTag(OttTag ottTag) {
+        this.ottTag = ottTag;
+    }
+    public void setThumbNail(String thumbNail) {
+        this.thumbNail = thumbNail;
+    }
 }

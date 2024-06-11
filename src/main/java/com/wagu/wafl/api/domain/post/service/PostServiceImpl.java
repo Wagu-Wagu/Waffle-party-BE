@@ -1,5 +1,6 @@
 package com.wagu.wafl.api.domain.post.service;
 
+import com.wagu.wafl.api.common.exception.PostException;
 import com.wagu.wafl.api.common.exception.UserException;
 import com.wagu.wafl.api.common.message.ExceptionMessage;
 import com.wagu.wafl.api.config.S3Config;
@@ -7,6 +8,7 @@ import com.wagu.wafl.api.config.jwt.JwtTokenManager;
 import com.wagu.wafl.api.domain.comment.entity.Comment;
 import com.wagu.wafl.api.domain.comment.repository.CommentRepository;
 import com.wagu.wafl.api.domain.post.dto.request.CreatePostRequestDTO;
+import com.wagu.wafl.api.domain.post.dto.request.EditPostRequestDTO;
 import com.wagu.wafl.api.domain.post.dto.response.PostDetailCommentVO;
 import com.wagu.wafl.api.domain.post.dto.response.OttPostsListResponseDTO;
 import com.wagu.wafl.api.domain.post.dto.response.PostDetailResponseDTO;
@@ -20,6 +22,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -57,8 +60,7 @@ public class PostServiceImpl implements PostService{
         User user = findUser(userId);
         String imageUrls = savePostImagesAndGetUrl(request.postImages());
 
-        String[] stringArray = imageUrls.replaceAll("[\\[\\]\"]", "").split(",");
-        List<String> imageUrlList = Arrays.asList(stringArray);
+        String thumbNail = getThumbNail(imageUrls);
 
         postRepository.save(Post.builder()
                 .user(user)
@@ -66,7 +68,7 @@ public class PostServiceImpl implements PostService{
                 .title(request.title())
                 .content(request.content())
                 .photoes(imageUrls)
-                .thumbNail(imageUrlList.get(0))
+                .thumbNail(thumbNail)
                 .build());
     }
 
@@ -92,9 +94,25 @@ public class PostServiceImpl implements PostService{
 
         // validate IsVisible
         List<PostDetailCommentVO> commentVOs = isVisibleSecretComment(post.getUser().getId(), userId, resultComments);
-            return PostDetailResponseDTO.of(post, Objects.equals(userId, post.getUser().getId()), commentVOs);
+        return PostDetailResponseDTO.of(post, Objects.equals(userId, post.getUser().getId()), commentVOs);
         }
 
+    @Transactional
+    @Override
+    public void editPost(Long userId, EditPostRequestDTO request) {
+        Post post = findPost(request.postId());
+        validatePostOwner(userId, post);
+
+        //S3 upload
+        String imageUrls = savePostImagesAndGetUrl(request.postImages());
+        String thumbNail = getThumbNail(imageUrls);
+
+        post.setTitle(request.title());
+        post.setContent(request.content());
+        post.setPhotoes(imageUrls);
+        post.setOttTag(request.ottTag());
+        post.setThumbNail(thumbNail);
+    }
 
     private Long verifyServiceUser(String accessToken) {
         if(accessToken!=null) {
@@ -103,6 +121,11 @@ public class PostServiceImpl implements PostService{
         return IS_NOT_SERVICE_USER;
     }
 
+    private void validatePostOwner(Long userId, Post post) {
+        if(!(post.getUser().getId() == userId)) {
+            throw new PostException(ExceptionMessage.IS_NOT_POST_OWNER.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
     List<PostDetailCommentVO> isVisibleSecretComment(Long postUserId, Long tokenUserId, List<Comment> comments) {
         if (Objects.equals(tokenUserId, IS_NOT_SERVICE_USER)) { // todo => 서비스 미가입자
             return comments.stream().map(PostDetailCommentVO::noAccessSecretComment).toList();
@@ -201,6 +224,11 @@ public class PostServiceImpl implements PostService{
         }
 
         return "";
+    }
+    private String getThumbNail(String imageUrls) {
+        String[] stringArray = imageUrls.replaceAll("[\\[\\]\"]", "").split(",");
+        List<String> imageUrlList = Arrays.asList(stringArray);
+        return imageUrlList.get(0);
     }
 
     private boolean checkImageFilesEmpty(List<MultipartFile> postImages) {
