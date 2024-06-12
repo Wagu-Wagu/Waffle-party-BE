@@ -99,6 +99,10 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_GET_MY_NEWS.getMessage(), response));
     }
 
-//    @Operation( summary = "알람 생긴 글 조회 api", description = "새 알람이 생긴 글을 조회합니다.")
-//    @GetMapping("/my/news/post")
+    @Operation( summary = "알람 생긴 글 조회 api", description = "새 알람을 확인합니다.")
+    @GetMapping("/my/news/{alertId}")
+    ResponseEntity<ApiResponse> checkMyNews(@UserId Long userId, @PathVariable Long alertId) {
+        userService.checkMyNews(userId, alertId);
+        return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_CHECK_MY_NEWS.getMessage()));
+    }
 }

@@ -173,7 +173,10 @@ public class CommentServiceImpl implements CommentService {
                     .findAny();
 
             targetAlert.ifPresent(alert -> {
-                alert.setIsRead(false);
+                if (alert.getIsRead()) {
+                    alert.setIsRead(false);
+                    alert.setNewAlertCount(0L);
+                }
                 alert.plusNewAlertCount();
             });
         }
@@ -186,7 +189,10 @@ public class CommentServiceImpl implements CommentService {
                     .findAny();
 
             targetAlert.ifPresent(alert -> {
-                alert.setIsRead(false);
+                if (alert.getIsRead()) {
+                    alert.setIsRead(false);
+                    alert.setNewAlertCount(0L);
+                }
                 alert.plusNewAlertCount();
             });
         }

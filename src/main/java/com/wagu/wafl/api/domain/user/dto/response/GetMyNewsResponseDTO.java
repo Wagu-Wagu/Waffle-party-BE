@@ -21,6 +21,7 @@ public record GetMyNewsResponseDTO(
 
 @Builder
 record GetMyNewsResponseVO(
+        Long alertId,
         AlertType alertType,
         Long postId,
         String content,
@@ -29,6 +30,7 @@ record GetMyNewsResponseVO(
 ) {
     public static GetMyNewsResponseVO of(AlertType alertType, Alert alert) {
         return GetMyNewsResponseVO.builder()
+                .alertId(alert.getId())
                 .alertType(alertType)
                 .postId(alert.getPost().getId())
                 .content(alert.getContent())

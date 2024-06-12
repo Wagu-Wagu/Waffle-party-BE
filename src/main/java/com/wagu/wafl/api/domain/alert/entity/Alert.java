@@ -67,6 +67,7 @@ public class Alert extends BaseEntity {
         this.isRead = isRead;
     }
 
+    public void setNewAlertCount(Long newAlertCount) {this.newAlertCount = newAlertCount; }
     public void plusNewAlertCount() {
         this.newAlertCount++;
     }

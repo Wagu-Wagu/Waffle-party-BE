@@ -20,4 +20,5 @@ public interface UserService {
     List<GetMyPostResponseDTO> getMyPosts(Long userId);
     List<GetMyCommentResponseDTO> getMyComments(Long userId);
     List<GetMyNewsResponseDTO> getMyNews(Long userId);
+    void checkMyNews(Long userId, Long AlertId);
 }
