@@ -4,6 +4,7 @@ import com.wagu.wafl.api.common.entity.BaseEntity;
 import com.wagu.wafl.api.domain.post.entity.Post;
 import com.wagu.wafl.api.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,10 +29,46 @@ public class Alert extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id")
-    private Post commentId;
+    @Column(name = "content")
+    private String content;
 
     @Column(name = "is_read")
     private Boolean isRead = false;
+
+    @Column(name = "new_alert_count")
+    private Long newAlertCount;
+
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private AlertType alertType;
+
+    @Builder
+    public Alert(User user, Post post, String content, AlertType alertType) {
+        setUser(user);
+        this.post = post;
+        this.content = content;
+        this.newAlertCount = 1L;
+        this.alertType = alertType;
+    }
+
+    public void setUser(User user) {
+        if (this.user!=null) {
+            user.getAlerts().remove(this);
+        }
+        this.user = user;
+        user.getAlerts().add(this);
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setIsRead(boolean isRead) {
+        this.isRead = isRead;
+    }
+
+    public void setNewAlertCount(Long newAlertCount) {this.newAlertCount = newAlertCount; }
+    public void plusNewAlertCount() {
+        this.newAlertCount++;
+    }
 }

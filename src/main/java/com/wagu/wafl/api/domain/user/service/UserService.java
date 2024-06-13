@@ -6,6 +6,7 @@ import com.wagu.wafl.api.domain.user.dto.response.GetMyCommentResponseDTO;
 import com.wagu.wafl.api.domain.user.dto.response.GetMyInfoResponseDTO;
 import java.util.List;
 
+import com.wagu.wafl.api.domain.user.dto.response.GetMyNewsResponseDTO;
 import com.wagu.wafl.api.domain.user.dto.response.GetMyPostResponseDTO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,4 +19,6 @@ public interface UserService {
     GetMyInfoResponseDTO getMyInfo(Long userId);
     List<GetMyPostResponseDTO> getMyPosts(Long userId);
     List<GetMyCommentResponseDTO> getMyComments(Long userId);
+    List<GetMyNewsResponseDTO> getMyNews(Long userId);
+    void checkMyNews(Long userId, Long AlertId);
 }
