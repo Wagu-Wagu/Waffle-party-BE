@@ -17,6 +17,7 @@ public enum ExceptionMessage {
     NOT_FOUND_FILE("등록할 파일을 찾을 수 없습니다."),
     NOT_REQUESTED_FILE("요청된 파일이 없습니다."),
     INVALID_MULTIPART_EXTENSION_EXCEPTION("확장자가 올바르지 않습니다."),
+    EXCEED_MAX_FILE_COUNT("게시글 사진은 3장이상 업로드 할 수 없습니다."),
 
 
     ALREADY_DID_ONBOARD("이미 온보딩을 한 유저입니다."),
@@ -28,6 +29,7 @@ public enum ExceptionMessage {
     // post
     NOT_FOUND_POST("id에 해당하는 게시글을 찾을 수 없습니다."),
     IS_NOT_POST_OWNER("작성한 게시글의 주인이 아닙니다."),
+    IS_EMPTY_FILE("사진 업로드 API는 최소 한장 이상의 사진을 업로드 해야합니다."),
 
     // comment
     NOT_FOUND_COMMENT("id에 해당하는 댓글을 찾을 수 없습니다."),

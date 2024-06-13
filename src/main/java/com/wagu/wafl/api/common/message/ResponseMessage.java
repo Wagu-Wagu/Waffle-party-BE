@@ -26,6 +26,7 @@ public enum ResponseMessage {
     SUCCESS_GET_POST_LIST("게시글 목록 조회를 성공했습니다."),
     SUCCESS_GET_POST_DETAIL("게시글 상세 조회를 성공했습니다."),
     SUCCESS_EDIT_POST("게시글 수정 성공했습니다."),
+    SUCCESS_UPLOAD_IMAGES("이미지 업로드 성공"),
 
     //comment
     SUCCESS_EDIT_COMMENT("댓글 ,답댓글 수정을 성공했습니다."),

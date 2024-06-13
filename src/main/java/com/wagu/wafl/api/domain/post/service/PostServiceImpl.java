@@ -9,9 +9,11 @@ import com.wagu.wafl.api.domain.comment.entity.Comment;
 import com.wagu.wafl.api.domain.comment.repository.CommentRepository;
 import com.wagu.wafl.api.domain.post.dto.request.CreatePostRequestDTO;
 import com.wagu.wafl.api.domain.post.dto.request.EditPostRequestDTO;
+import com.wagu.wafl.api.domain.post.dto.request.UploadPostImageRequestDTO;
 import com.wagu.wafl.api.domain.post.dto.response.PostDetailCommentVO;
 import com.wagu.wafl.api.domain.post.dto.response.OttPostsListResponseDTO;
 import com.wagu.wafl.api.domain.post.dto.response.PostDetailResponseDTO;
+import com.wagu.wafl.api.domain.post.dto.response.UploadPostImageResponseDTO;
 import com.wagu.wafl.api.domain.post.entity.OttTag;
 import com.wagu.wafl.api.domain.post.entity.Post;
 import com.wagu.wafl.api.domain.post.repository.PostRepository;
@@ -19,6 +21,7 @@ import com.wagu.wafl.api.domain.s3.service.S3Service;
 import com.wagu.wafl.api.domain.user.entity.User;
 import com.wagu.wafl.api.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -38,6 +41,7 @@ public class PostServiceImpl implements PostService{
     private final CommentRepository commentRepository;
     private final JwtTokenManager jwtTokenManager;
     private final Long IS_NOT_SERVICE_USER = -1L;
+    private final int MAX_POST_IMAGES_COUNT = 3;
 
     @Override
     public List<OttPostsListResponseDTO> getOttPosts(List<OttTag> request) {
@@ -103,15 +107,33 @@ public class PostServiceImpl implements PostService{
         Post post = findPost(request.postId());
         validatePostOwner(userId, post);
 
-        //S3 upload
-        String imageUrls = savePostImagesAndGetUrl(request.postImages());
-        String thumbNail = getThumbNail(imageUrls);
+        String thumbNail = "";
+        String imageUrls = "";
+        if(!request.postImages().isEmpty()) {
+            thumbNail = getThumbNail(request.postImages().get(0));
+            imageUrls = request.postImages().stream()
+                    .map(s3Url -> '"'+s3Url+'"')
+                    .collect(Collectors.joining(",","[","]"));
+        }
 
         post.setTitle(request.title());
         post.setContent(request.content());
         post.setPhotoes(imageUrls);
         post.setOttTag(request.ottTag());
         post.setThumbNail(thumbNail);
+    }
+
+    @Override
+    public UploadPostImageResponseDTO uploadPostImages(UploadPostImageRequestDTO request) {
+        if(request.postImages().size() >= MAX_POST_IMAGES_COUNT) {
+            throw new PostException(ExceptionMessage.EXCEED_MAX_FILE_COUNT.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        if(!checkImageFilesEmpty(request.postImages())) {
+            throw new PostException(ExceptionMessage.IS_EMPTY_FILE.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        String images = savePostImagesAndGetUrl(request.postImages());
+
+        return UploadPostImageResponseDTO.of(images);
     }
 
     private Long verifyServiceUser(String accessToken) {

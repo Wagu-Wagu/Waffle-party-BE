@@ -21,6 +21,6 @@ public record EditPostRequestDTO (
         @NotBlank(message = "글 본문은 빈스트링 일 수 없습니다.")
         String content,
 
-        List<MultipartFile> postImages) {
+        List<String> postImages) {
 
 }
