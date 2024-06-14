@@ -94,4 +94,8 @@ public class Post extends BaseEntity {
     public void setThumbNail(String thumbNail) {
         this.thumbNail = thumbNail;
     }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
 }

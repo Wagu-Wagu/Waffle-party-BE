@@ -240,6 +240,7 @@ public class PostServiceImpl implements PostService{
 
          */
 
+    @Transactional
     @Override
     public void deletePost(Long userId, Long postId) {
         User user = findUser(userId);
@@ -247,7 +248,7 @@ public class PostServiceImpl implements PostService{
 
         validatePostOwner(userId, post);
 
-        postRepository.deleteById(postId);
+        post.setIsActive(false);
     }
 
     private String savePostImagesAndGetUrl(List<MultipartFile> postImages) {
