@@ -31,7 +31,8 @@ public enum ResponseMessage {
     //comment
     SUCCESS_EDIT_COMMENT("댓글 ,답댓글 수정을 성공했습니다."),
     SUCCESS_CREATE_POST_COMMENT("게시글 댓글 달기에 성공했습니다."),
-    SUCCESS_CREATE_COMMENT_REPLY("게시글 답댓글 달기에 성공했습니다.");
+    SUCCESS_CREATE_COMMENT_REPLY("게시글 답댓글 달기에 성공했습니다."),
+    SUCCESS_DELETE_COMMENT("답댓글 , 댓글 삭제에 성공했습니다.");
 
     private final String message;
 }

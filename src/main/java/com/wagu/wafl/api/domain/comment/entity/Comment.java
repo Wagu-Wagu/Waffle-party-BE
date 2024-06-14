@@ -80,6 +80,10 @@ public class Comment extends BaseEntity {
         this.isSecret = isSecret;
     }
 
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
     @Builder
     Comment(User user, Post post, String content, Comment parentComment, boolean isSecret) {
         setUser(user);
