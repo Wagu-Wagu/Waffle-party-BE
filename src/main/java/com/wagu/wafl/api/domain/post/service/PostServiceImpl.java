@@ -250,6 +250,17 @@ public class PostServiceImpl implements PostService{
 
          */
 
+    @Transactional
+    @Override
+    public void deletePost(Long userId, Long postId) {
+        User user = findUser(userId);
+        Post post = findPost(postId);
+
+        validatePostOwner(userId, post);
+
+        post.setIsActive(false);
+    }
+
     private String savePostImagesAndGetUrl(List<MultipartFile> postImages) {
         if (checkImageFilesEmpty(postImages)) {
             return s3Service.uploadImages(postImages, s3Config.getPostImageFolderName());

@@ -1,6 +1,7 @@
 package com.wagu.wafl.api.domain.post.entity;
 
 import com.wagu.wafl.api.common.entity.BaseEntity;
+import com.wagu.wafl.api.domain.alert.entity.Alert;
 import com.wagu.wafl.api.domain.comment.entity.Comment;
 import com.wagu.wafl.api.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -50,8 +51,11 @@ public class Post extends BaseEntity {
     @Column(name = "is_active")
     private Boolean isActive = true;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Alert> alerts = new ArrayList<>();
 
     @Builder
     public Post(User user, String title, String content, String photoes, OttTag ottTag, String thumbNail) {
@@ -89,5 +93,9 @@ public class Post extends BaseEntity {
     }
     public void setThumbNail(String thumbNail) {
         this.thumbNail = thumbNail;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
     }
 }

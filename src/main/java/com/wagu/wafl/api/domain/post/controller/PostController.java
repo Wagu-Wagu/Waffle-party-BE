@@ -83,4 +83,10 @@ public class PostController {
         return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_UPLOAD_IMAGES.getMessage(), response));
     }
 
+    @Operation( summary = "게시글 삭제", description = "게시글을 삭제합니다.")
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<ApiResponse> deletePost(@UserId Long userId, @PathVariable Long postId) {
+        postService.deletePost(userId, postId);
+        return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_DELETE_POST.getMessage()));
+    }
 }
