@@ -10,6 +10,8 @@ import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -45,6 +47,7 @@ public class Comment extends BaseEntity {
     @Column(name = "is_secret")
     private Boolean isSecret = false;
 
+    @SQLRestriction("is_active <> 'true'")
     @Column(name = "is_active")
     private Boolean isActive = true;
 

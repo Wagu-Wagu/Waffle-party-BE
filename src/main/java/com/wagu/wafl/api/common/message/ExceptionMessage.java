@@ -30,6 +30,7 @@ public enum ExceptionMessage {
     NOT_FOUND_POST("id에 해당하는 게시글을 찾을 수 없습니다."),
     IS_NOT_POST_OWNER("작성한 게시글의 주인이 아닙니다."),
     IS_EMPTY_FILE("사진 업로드 API는 최소 한장 이상의 사진을 업로드 해야합니다."),
+    NOT_ACTIVE_POST("삭제된 게시글 입니다"),
 
     // comment
     NOT_FOUND_COMMENT("id에 해당하는 댓글을 찾을 수 없습니다."),
