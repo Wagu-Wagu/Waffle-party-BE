@@ -17,4 +17,5 @@ public interface PostService {
     PostDetailResponseDTO getPostDetail(String accessToken, Long postId);
     void editPost(Long userId, EditPostRequestDTO request);
     UploadPostImageResponseDTO uploadPostImages(UploadPostImageRequestDTO request);
+    void deletePost(Long userId, Long postId);
 }
