@@ -8,4 +8,5 @@ public interface CommentService {
     void createPostComment(Long userId, CreatePostCommentDTO request);
     void createCommentReply(Long userId, CreateCommentReplyDTO request);
     void editComment(Long userId, EditCommentRequestDTO request);
+    void deleteComment(Long userId, Long commentId);
 }

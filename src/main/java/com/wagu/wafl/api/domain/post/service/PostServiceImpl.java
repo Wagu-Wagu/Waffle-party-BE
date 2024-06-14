@@ -82,12 +82,17 @@ public class PostServiceImpl implements PostService{
     @Override
     public PostDetailResponseDTO getPostDetail(String accessToken, Long postId) {
         Post post = findPost(postId);
+        validateActivePost(post);
 
         List<Comment> resultComments = new ArrayList<>();
         List<Comment> parentComments = commentRepository.findAllCommentByPostId(postId);
 
         for (Comment parentComment : parentComments) { //todo - 성능저하 가능성, isActive여부
             List<Comment> subComments = new ArrayList<>();
+
+            if(parentComment.getSubComments().size()==0 && !parentComment.getIsActive()) {
+                continue;
+            }
             subComments.add(parentComment);
             parentComment.getSubComments().sort(Comparator.comparing(Comment::getCreatedAt));
             subComments.addAll(parentComment.getSubComments());
@@ -123,6 +128,11 @@ public class PostServiceImpl implements PostService{
         post.setThumbNail(thumbNail);
     }
 
+    public void validateActivePost(Post post) {
+        if(!post.getIsActive()) {
+            throw new PostException(ExceptionMessage.NOT_ACTIVE_POST.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
     @Override
     public UploadPostImageResponseDTO uploadPostImages(UploadPostImageRequestDTO request) {
         if(request.postImages().size() >= MAX_POST_IMAGES_COUNT) {

@@ -80,6 +80,14 @@ public class CommentServiceImpl implements CommentService {
         comment.setIsSecret(request.isSecret());
     }
 
+    @Transactional
+    @Override
+    public void deleteComment(Long userId, Long commentId) {
+        Comment comment = findComment(commentId);
+        validateCommentOwner(userId, comment);
+        comment.setIsActive(false);
+    }
+
     private void validatePostComment(Post post, Long commentId) {
         boolean commentExists = post.getComments().stream()
                 .anyMatch(comment -> comment.getId().equals(commentId));

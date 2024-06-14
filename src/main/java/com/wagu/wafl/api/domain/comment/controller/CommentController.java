@@ -13,9 +13,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -51,6 +53,16 @@ public class CommentController {
             @Valid @RequestBody EditCommentRequestDTO request) {
         commentService.editComment(userId, request);
         return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_EDIT_COMMENT.getMessage()));
+    }
+
+    @Operation( summary = "댓글, 답댓글 삭제하기",
+            description = "댓글, 답댓글을 삭제합니다. ")
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<ApiResponse> deleteComment(
+            @UserId Long userId,
+            @PathVariable Long commentId) {
+        commentService.deleteComment(userId, commentId);
+        return ResponseEntity.ok(ApiResponse.success(ResponseMessage.SUCCESS_DELETE_COMMENT.getMessage()));
     }
 
 }

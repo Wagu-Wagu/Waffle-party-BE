@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u "
             + "join fetch u.comments c "
-            + "where u.id = :userId"
+            + "where u.id = :userId and c.isActive=true "
             + " order by c.createdAt desc")
     Optional<User> findUserAndCommentOrderByCreatedAt(@Param("userId") Long userId);
 

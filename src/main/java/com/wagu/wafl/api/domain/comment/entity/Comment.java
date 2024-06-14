@@ -10,6 +10,8 @@ import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -39,6 +41,7 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "parent_comment_id")
     private Comment parentComment;
 
+    @SQLRestriction("is_active <> 'true'")
     @OneToMany(mappedBy = "parentComment")
     private List<Comment> subComments = new ArrayList<>();
 
@@ -78,6 +81,10 @@ public class Comment extends BaseEntity {
 
     public void setIsSecret(boolean isSecret) {
         this.isSecret = isSecret;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
     }
 
     @Builder

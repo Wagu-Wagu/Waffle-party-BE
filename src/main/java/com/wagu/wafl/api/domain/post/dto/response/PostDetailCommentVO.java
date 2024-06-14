@@ -10,7 +10,7 @@ public record PostDetailCommentVO(Long commentId,  Long commentUserId,
                                   String commenterNickName, String userImage,
                                   LocalDateTime createdAt, String content,
                                   boolean isParentComment, boolean isMyComment,
-                                  boolean isSecret, boolean isVisible) {
+                                  boolean isSecret, boolean isVisible, boolean isActive) {
 
     public static PostDetailCommentVO noAccessSecretComment(Comment comment) {
         return PostDetailCommentVO.builder()
@@ -22,6 +22,7 @@ public record PostDetailCommentVO(Long commentId,  Long commentUserId,
                 .commentUserId(comment.getUser().getId())
                 .isSecret(comment.getIsSecret())
                 .isVisible(false)
+                .isActive(comment.getIsActive())
                 .isParentComment(comment.getParentComment() == null)
                 .isMyComment(false)
                 .build();
@@ -38,6 +39,7 @@ public record PostDetailCommentVO(Long commentId,  Long commentUserId,
                 .content(comment.getContent())
                 .isSecret(comment.getIsSecret())
                 .isVisible(true)
+                .isActive(comment.getIsActive())
                 .isParentComment(comment.getParentComment() == null)
                 .isMyComment(isMyComment)
                 .build();
@@ -53,6 +55,7 @@ public record PostDetailCommentVO(Long commentId,  Long commentUserId,
                 .commentUserId(comment.getUser().getId())
                 .isSecret(comment.getIsSecret())
                 .isVisible(isVisible)
+                .isActive(comment.getIsActive())
                 .isParentComment(comment.getParentComment() == null)
                 .isMyComment(isMyComment)
                 .build();
