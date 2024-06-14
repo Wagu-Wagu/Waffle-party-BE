@@ -41,13 +41,13 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "parent_comment_id")
     private Comment parentComment;
 
+    @SQLRestriction("is_active <> 'true'")
     @OneToMany(mappedBy = "parentComment")
     private List<Comment> subComments = new ArrayList<>();
 
     @Column(name = "is_secret")
     private Boolean isSecret = false;
 
-    @SQLRestriction("is_active <> 'true'")
     @Column(name = "is_active")
     private Boolean isActive = true;
 
