@@ -4,6 +4,7 @@ import com.wagu.wafl.api.domain.alert.entity.Alert;
 import com.wagu.wafl.api.domain.alert.entity.AlertType;
 import lombok.Builder;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,7 +27,8 @@ record GetMyNewsResponseVO(
         Long postId,
         String content,
         Long newAlertCount,
-        boolean isRead
+        boolean isRead,
+        LocalDateTime modifiedAt
 ) {
     public static GetMyNewsResponseVO of(AlertType alertType, Alert alert) {
         return GetMyNewsResponseVO.builder()
@@ -36,6 +38,7 @@ record GetMyNewsResponseVO(
                 .content(alert.getContent())
                 .newAlertCount(alert.getNewAlertCount())
                 .isRead(alert.getIsRead())
+                .modifiedAt(alert.getModifiedAt())
                 .build();
     }
 }
