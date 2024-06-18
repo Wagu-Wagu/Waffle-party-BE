@@ -3,7 +3,8 @@ package com.wagu.wafl.api.domain.user.dto.response;
 import com.wagu.wafl.api.domain.comment.entity.Comment;
 import com.wagu.wafl.api.domain.post.entity.OttTag;
 import com.wagu.wafl.api.domain.post.entity.Post;
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
 import lombok.Builder;
 
 @Builder
@@ -12,7 +13,7 @@ public record GetMyCommentResponseDTO(
         String postTitle,
         String commentContent,
         OttTag ottTag,
-        LocalDate createdAt
+        LocalDateTime createdAt
 ) {
     public static GetMyCommentResponseDTO of(Post post, Comment comment) {
         return GetMyCommentResponseDTO.builder()
@@ -20,7 +21,7 @@ public record GetMyCommentResponseDTO(
                 .postTitle(post.getTitle())
                 .commentContent(comment.getContent())
                 .ottTag(post.getOttTag())
-                .createdAt(LocalDate.from(comment.getCreatedAt()))
+                .createdAt(LocalDateTime.from(comment.getCreatedAt()))
                 .build();
     }
 }
