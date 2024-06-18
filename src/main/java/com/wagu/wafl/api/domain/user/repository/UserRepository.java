@@ -17,8 +17,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserAndCommentOrderByCreatedAt(@Param("userId") Long userId);
 
     @Query("select u from User u "
-            + "join fetch u.posts c "
-            + "where u.id = :userId"
-            + " order by c.createdAt desc")
+            + "join fetch u.posts p "
+            + "where u.id = :userId  and p.isActive=true "
+            + " order by p.createdAt desc")
     Optional<User> findUserAndPostOrderByCreatedAt(@Param("userId") Long userId);
 }
