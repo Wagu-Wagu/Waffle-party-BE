@@ -11,6 +11,7 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -51,6 +52,7 @@ public class Post extends BaseEntity {
     @Column(name = "is_active")
     private Boolean isActive = true;
 
+    @SQLRestriction("is_active <> 'true'")
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
@@ -77,6 +79,9 @@ public class Post extends BaseEntity {
 
     public void upCommentCount() {
         this.commentCount += 1;
+    }
+    public void downCommentCount() {
+        this.commentCount -= 1;
     }
 
     public void setTitle(String title) {

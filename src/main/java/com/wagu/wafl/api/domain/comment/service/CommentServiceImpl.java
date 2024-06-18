@@ -86,6 +86,8 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = findComment(commentId);
         validateCommentOwner(userId, comment);
         comment.setIsActive(false);
+        Post post = comment.getPost();
+        post.downCommentCount();
     }
 
     private void validatePostComment(Post post, Long commentId) {
