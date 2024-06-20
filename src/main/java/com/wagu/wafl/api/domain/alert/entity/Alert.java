@@ -1,6 +1,7 @@
 package com.wagu.wafl.api.domain.alert.entity;
 
 import com.wagu.wafl.api.common.entity.BaseEntity;
+import com.wagu.wafl.api.domain.comment.entity.Comment;
 import com.wagu.wafl.api.domain.post.entity.Post;
 import com.wagu.wafl.api.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -29,8 +30,9 @@ public class Alert extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @Column(name = "content")
-    private String content;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
     @Column(name = "is_read")
     private Boolean isRead = false;
@@ -43,10 +45,10 @@ public class Alert extends BaseEntity {
     private AlertType alertType;
 
     @Builder
-    public Alert(User user, Post post, String content, AlertType alertType) {
+    public Alert(User user, Post post, Comment comment, AlertType alertType) {
         setUser(user);
         this.post = post;
-        this.content = content;
+        this.comment = comment;
         this.newAlertCount = 1L;
         this.alertType = alertType;
     }
@@ -59,15 +61,12 @@ public class Alert extends BaseEntity {
         user.getAlerts().add(this);
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
     public void setIsRead(boolean isRead) {
         this.isRead = isRead;
     }
 
     public void setNewAlertCount(Long newAlertCount) {this.newAlertCount = newAlertCount; }
+
     public void plusNewAlertCount() {
         this.newAlertCount++;
     }

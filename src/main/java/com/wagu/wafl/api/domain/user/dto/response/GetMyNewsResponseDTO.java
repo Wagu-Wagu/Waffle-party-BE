@@ -31,14 +31,29 @@ record GetMyNewsResponseVO(
         LocalDateTime modifiedAt
 ) {
     public static GetMyNewsResponseVO of(AlertType alertType, Alert alert) {
-        return GetMyNewsResponseVO.builder()
-                .alertId(alert.getId())
-                .alertType(alertType)
-                .postId(alert.getPost().getId())
-                .content(alert.getContent())
-                .newAlertCount(alert.getNewAlertCount())
-                .isRead(alert.getIsRead())
-                .modifiedAt(alert.getModifiedAt())
-                .build();
+        GetMyNewsResponseVO getMyNewsResponseVO = null;
+        if (alertType.equals(AlertType.COMMENT)) {
+            getMyNewsResponseVO = GetMyNewsResponseVO.builder()
+                    .alertId(alert.getId())
+                    .alertType(alertType)
+                    .postId(alert.getPost().getId())
+                    .content(alert.getPost().getTitle())
+                    .newAlertCount(alert.getNewAlertCount())
+                    .isRead(alert.getIsRead())
+                    .modifiedAt(alert.getModifiedAt())
+                    .build();
+        }
+        if (alertType.equals(AlertType.REPLY)) {
+            getMyNewsResponseVO = GetMyNewsResponseVO.builder()
+                    .alertId(alert.getId())
+                    .alertType(alertType)
+                    .postId(alert.getComment().getPost().getId())
+                    .content(alert.getComment().getContent())
+                    .newAlertCount(alert.getNewAlertCount())
+                    .isRead(alert.getIsRead())
+                    .modifiedAt(alert.getModifiedAt())
+                    .build();
+        }
+        return getMyNewsResponseVO;
     }
 }
