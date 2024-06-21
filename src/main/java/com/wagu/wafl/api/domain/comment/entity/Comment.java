@@ -52,7 +52,7 @@ public class Comment extends BaseEntity {
     @Column(name = "is_active")
     private Boolean isActive = true;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "comment")
+    @OneToOne(mappedBy = "comment")
     private Alert alert;
 
     public void setPost(Post post) {
