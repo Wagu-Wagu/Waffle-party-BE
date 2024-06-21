@@ -45,7 +45,9 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(newComment);
         commentPost.upCommentCount();
 
-        updateAlert(newComment, AlertType.COMMENT);
+        if (!isPostOwner(commentCreateUser, commentPost)) {
+            updateAlert(newComment, AlertType.COMMENT);
+        }
     }
 
     @Transactional
@@ -64,7 +66,17 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(newComment);
         commentReplyPost.upCommentCount();
 
-        updateAlert(commentReplyComment, AlertType.REPLY);
+        if (!isPostOwner(commentReplyCreateUser, commentReplyPost) && !isCommentOwner(commentReplyCreateUser, commentReplyComment)) {
+            updateAlert(newComment, AlertType.REPLY);
+        }
+    }
+
+    private boolean isPostOwner(User user, Post post) {
+        return post.getUser() == user;
+    }
+
+    private boolean isCommentOwner(User user, Comment comment) {
+        return comment.getUser() == user;
     }
 
     @Transactional
@@ -133,21 +145,17 @@ public class CommentServiceImpl implements CommentService {
 
     private boolean isFirstAlert(Comment comment, AlertType alertType) {
         boolean isFirst = false;
-        User user = comment.getPost().getUser();
-        List<Alert> alerts = user.getAlerts();
         if (Objects.equals(alertType, AlertType.COMMENT)) {
-            Optional<Alert> targetAlert = alerts.stream()
-                    .filter(alert -> alert.getPost().equals(comment.getPost()) && alert.getAlertType().equals(AlertType.COMMENT))
-                    .findAny();
-            if(targetAlert.isEmpty()) {
+            User postOwner = comment.getPost().getUser();
+            Optional<Alert> alert = alertRepository.findByUserIdAndPostId(postOwner.getId(), comment.getPost().getId());
+            if(!alert.isPresent()) {
                 isFirst = true;
             }
         }
         if (Objects.equals(alertType, AlertType.REPLY)){
-            Optional<Alert> targetAlert = alerts.stream()
-                    .filter(alert -> alert.getPost().equals(comment.getPost()) && alert.getAlertType().equals(AlertType.REPLY))
-                    .findAny();
-            if(targetAlert.isEmpty()) {
+            User commentOwner = comment.getParentComment().getUser();
+            Optional<Alert> alert = alertRepository.findByUserIdAndCommentId(commentOwner.getId(), comment.getParentComment().getId());
+            if(!alert.isPresent()) {
                 isFirst = true;
             }
         }
@@ -155,20 +163,18 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private void createAlert(Comment comment, AlertType alertType) {
-        Post post = comment.getPost();
         if (Objects.equals(alertType, AlertType.COMMENT)) {
+            Post post = comment.getPost();
             alertRepository.save(Alert.builder()
                     .user(post.getUser())
                     .post(post)
-                    .content(post.getTitle())
                     .alertType(alertType)
                     .build());
         }
         if (Objects.equals(alertType, AlertType.REPLY)) {
             alertRepository.save(Alert.builder()
-                    .user(post.getUser())
-                    .post(post)
-                    .content(comment.getContent())
+                    .user(comment.getParentComment().getUser())
+                    .comment(comment.getParentComment())
                     .alertType(alertType)
                     .build());
         }
@@ -177,10 +183,7 @@ public class CommentServiceImpl implements CommentService {
     private void updateExistingAlert(Comment comment, AlertType alertType) {
         if (Objects.equals(alertType, AlertType.COMMENT)) {
             Post post = comment.getPost();
-            List<Alert> alerts = post.getUser().getAlerts();
-            Optional<Alert> targetAlert = alerts.stream()
-                    .filter(alert -> alert.getPost().equals(post) && alert.getAlertType().equals(AlertType.COMMENT))
-                    .findAny();
+            Optional<Alert> targetAlert = alertRepository.findByUserIdAndPostId(post.getUser().getId(), post.getId());
 
             targetAlert.ifPresent(alert -> {
                 if (alert.getIsRead()) {
@@ -192,11 +195,8 @@ public class CommentServiceImpl implements CommentService {
         }
 
         if(Objects.equals(alertType, AlertType.REPLY)) {
-            Post post = comment.getPost();
-            List<Alert> alerts = post.getUser().getAlerts();
-            Optional<Alert> targetAlert = alerts.stream()
-                    .filter(alert -> alert.getPost().equals(post) && alert.getAlertType().equals(AlertType.REPLY))
-                    .findAny();
+            Comment parentComment = comment.getParentComment();
+            Optional<Alert> targetAlert = alertRepository.findByUserIdAndCommentId(parentComment.getUser().getId(), parentComment.getId());
 
             targetAlert.ifPresent(alert -> {
                 if (alert.getIsRead()) {

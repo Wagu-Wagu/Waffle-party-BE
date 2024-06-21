@@ -1,6 +1,7 @@
 package com.wagu.wafl.api.domain.comment.entity;
 
 import com.wagu.wafl.api.common.entity.BaseEntity;
+import com.wagu.wafl.api.domain.alert.entity.Alert;
 import com.wagu.wafl.api.domain.post.entity.Post;
 import com.wagu.wafl.api.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -50,6 +51,9 @@ public class Comment extends BaseEntity {
 
     @Column(name = "is_active")
     private Boolean isActive = true;
+
+    @OneToOne(mappedBy = "comment")
+    private Alert alert;
 
     public void setPost(Post post) {
         if (this.post != null) {
