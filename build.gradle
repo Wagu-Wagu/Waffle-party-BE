@@ -33,6 +33,21 @@ dependencies {
 
 	// swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+
+	// OpenFeign
+	implementation platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.1")
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.3'
+
+  	//validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	//jwtToken
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
+
 }
 
 tasks.named('test') {
