@@ -87,7 +87,7 @@ jobs:
         run:
           aws deploy create-deployment
           --application-name waguwagu-server-codedeploy
-          --deployment-group-name waguwagu-dev-codedeploy-group
+          --deployment-group-name waguwagu-prod-codedeploy-group
           --file-exists-behavior OVERWRITE
           --s3-location bucket=${{ secrets.AWS_S3_PROD_BUCKET_NAME }},bundleType=zip,key=prod/$GITHUB_SHA.zip
           --region ap-northeast-2
