@@ -94,7 +94,6 @@ public class UserServiceImpl implements UserService{
             return;
         }
         String userImageS3URL = s3ServiceImpl.uploadImage(requestFile, s3Config.getUserImageFolderName()); //todo - 동일이미지 업로드
-
         String splitedURL = splitUserURL(userImageS3URL);
         user.setUserImage(splitedURL);
     }
